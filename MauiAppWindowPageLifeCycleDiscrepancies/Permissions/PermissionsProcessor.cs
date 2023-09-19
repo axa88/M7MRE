@@ -3,6 +3,7 @@
 using static Microsoft.Maui.ApplicationModel.Permissions;
 
 
+// ReSharper disable once CheckNamespace
 namespace MauiAppNet7.Permissions;
 
 internal static class PermissionsProcessor

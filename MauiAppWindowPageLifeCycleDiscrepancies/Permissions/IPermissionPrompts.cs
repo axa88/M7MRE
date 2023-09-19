@@ -1,7 +1,8 @@
-﻿namespace MauiAppNet7.Permissions;
+﻿// ReSharper disable once CheckNamespace
+namespace MauiAppNet7.Permissions;
 
 internal interface IPermissionPrompts
 {
-	Task DisplayRationalAlert(Page page);
-	Task<bool> DisplaySettingsAlert(Page page);
+	internal Task DisplayRationalAlert(Page page);
+	internal Task<bool> DisplaySettingsAlert(Page page);
 }

@@ -1,15 +1,15 @@
 ﻿// ReSharper disable once CheckNamespace
 namespace MauiAppNet7.Permissions;
 
-public partial class BluetoothPermissions
+internal partial class BluetoothPermissions
 {
-	public string RationalTitle => "Bluetooth permission required";
-	public string RationalMessage => "Permission to use Bluetooth is required to communicate with your Ride";
-	public string RationalButtonText => "Continue";
-	public string GoToSettingsTitle => "Bluetooth Access Denied?";
-	public string GoToSettingsMessage => "Go to Settings and enable \"Nearby devices\" to use this App";
-	public string GoToSettingsAcceptText => "Go";
-	public string GoToSettingsCancelText => "Exit";
+	private static string RationalTitle => "Bluetooth permission required";
+	private static string RationalMessage => "Permission to use Bluetooth is required to communicate with your Ride";
+	private static string RationalButtonText => "Continue";
+	private static string GoToSettingsTitle => "Bluetooth Access Denied?";
+	private static string GoToSettingsMessage => "Go to Settings and enable \"Nearby devices\" to use this App";
+	private static string GoToSettingsAcceptText => "Go";
+	private static string GoToSettingsCancelText => "Exit";
 
 	public static partial void EnableBluetooth() { }
 }

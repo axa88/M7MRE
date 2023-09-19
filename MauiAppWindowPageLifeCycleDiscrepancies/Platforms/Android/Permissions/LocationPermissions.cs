@@ -10,11 +10,11 @@ internal partial class LocationPermissions
 
 	protected LocationPermissions(string granularity) => _granularity = granularity;
 
-	public string RationalTitle => $"{_granularity} Location permission required";
-	public string RationalMessage => $"Permission to use {_granularity} Location is required by Bluetooth on your version of Android";
-	public string RationalButtonText => "Continue";
-	public string GoToSettingsTitle => $"{_granularity} Location Access Denied?";
-	public string GoToSettingsMessage => $"Go to Settings and enable \"{_granularity} Location\" to use this App";
-	public string GoToSettingsAcceptText => "Go";
-	public string GoToSettingsCancelText => "Exit";
+	private string RationalTitle => $"{_granularity} Location permission required";
+	private string RationalMessage => $"Permission to use {_granularity} Location is required by Bluetooth on your version of Android";
+	private static string RationalButtonText => "Continue";
+	private string GoToSettingsTitle => $"{_granularity} Location Access Denied?";
+	private string GoToSettingsMessage => $"Go to Settings and enable \"{_granularity} Location\" to use this App";
+	private static string GoToSettingsAcceptText => "Go";
+	private static string GoToSettingsCancelText => "Exit";
 }

@@ -1,6 +1,7 @@
 ﻿using static Microsoft.Maui.ApplicationModel.Permissions;
 
 
+// ReSharper disable once CheckNamespace
 namespace MauiAppNet7.Permissions;
 
 internal partial class LocationPermissions : LocationWhenInUse, IPermissionPrompts

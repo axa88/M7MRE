@@ -4,7 +4,7 @@ using Android.OS;
 // ReSharper disable once CheckNamespace
 namespace MauiAppNet7.Permissions;
 
-public partial class BluetoothPermissions
+internal partial class BluetoothPermissions
 {
 	private static string RationalTitle => "Bluetooth permission required";
 	private static string RationalMessage => "Permission to use Bluetooth is required to communicate with your Ride";

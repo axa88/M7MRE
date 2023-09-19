@@ -1,9 +1,10 @@
-﻿
-using static Microsoft.Maui.ApplicationModel.Permissions;
+﻿using static Microsoft.Maui.ApplicationModel.Permissions;
 
+
+// ReSharper disable once CheckNamespace
 namespace MauiAppNet7.Permissions;
 
-public partial class BluetoothPermissions : BasePlatformPermission , IPermissionPrompts
+internal partial class BluetoothPermissions : BasePlatformPermission, IPermissionPrompts
 {
 	public static partial void EnableBluetooth();
 

@@ -94,7 +94,7 @@ public class PageTrace
 
 	private static bool TraceIt(object title, object @event, EventArgs args = null)
 	{
-		//lock (_lock)
+		lock (_lock)
 		{
 			Trace.Write($"{title}:{@event}");
 
