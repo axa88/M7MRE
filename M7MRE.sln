@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MauiAppWindowPageLifeCycleD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayouts", "DataLayouts\DataLayouts.csproj", "{79037147-8F2A-4651-89B7-FDC0E9F2E2ED}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LifecycleTriggeredPermissionsUi", "LifecycleTriggeredPermissionsUi\LifecycleTriggeredPermissionsUi.csproj", "{106392C3-43E2-475B-A009-3148AC145C8E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +26,11 @@ Global
 		{79037147-8F2A-4651-89B7-FDC0E9F2E2ED}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{79037147-8F2A-4651-89B7-FDC0E9F2E2ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79037147-8F2A-4651-89B7-FDC0E9F2E2ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{106392C3-43E2-475B-A009-3148AC145C8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{106392C3-43E2-475B-A009-3148AC145C8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{106392C3-43E2-475B-A009-3148AC145C8E}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{106392C3-43E2-475B-A009-3148AC145C8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{106392C3-43E2-475B-A009-3148AC145C8E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
