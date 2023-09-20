@@ -2,11 +2,10 @@
 
 
 // ReSharper disable once CheckNamespace
-namespace MauiAppWindowPageLifeCycleDiscrepancies
+namespace MauiAppWindowPageLifeCycleDiscrepancies;
+
+[Register("AppDelegate")]
+public class AppDelegate : MauiUIApplicationDelegate
 {
-	[Register("AppDelegate")]
-	public class AppDelegate : MauiUIApplicationDelegate
-	{
-		protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
-	}
+	protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
 }
