@@ -1,5 +1,7 @@
 ﻿using Foundation;
 
+
+// ReSharper disable once CheckNamespace
 namespace MauiAppWindowPageLifeCycleDiscrepancies
 {
 	[Register("AppDelegate")]
