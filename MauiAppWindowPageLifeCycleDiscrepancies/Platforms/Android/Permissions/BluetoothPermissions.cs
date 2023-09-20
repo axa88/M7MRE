@@ -2,7 +2,7 @@
 using Android.OS;
 
 // ReSharper disable once CheckNamespace
-namespace MauiAppNet7.Permissions;
+namespace MauiAppWindowPageLifeCycleDiscrepancies.Permissions;
 
 internal partial class BluetoothPermissions
 {

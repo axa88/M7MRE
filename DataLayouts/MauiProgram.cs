@@ -21,7 +21,7 @@ public static class MauiProgram
 			});
 
 	#if ANDROID
-		builder.ConfigureLifecycleEvents(lifecycleBuilder => lifecycleBuilder.AddAndroid(androidLifecycleBuilder => androidLifecycleBuilder.OnDestroy(activity => MauiAppNet7.Permissions.PermissionsProcessor.OnWindowDestroying(activity))));
+		builder.ConfigureLifecycleEvents(lifecycleBuilder => lifecycleBuilder.AddAndroid(androidLifecycleBuilder => androidLifecycleBuilder.OnDestroy(activity => Permissions.PermissionsProcessor.OnWindowDestroying(activity))));
 	#endif
 
 	#if DEBUG

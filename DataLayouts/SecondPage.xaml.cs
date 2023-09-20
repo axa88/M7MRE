@@ -1,4 +1,4 @@
-﻿using MauiAppNet7.Permissions;
+﻿using DataLayouts.Permissions;
 
 
 namespace DataLayouts;

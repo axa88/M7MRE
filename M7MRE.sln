@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayouts", "DataLayouts\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LifecycleTriggeredPermissionsUi", "LifecycleTriggeredPermissionsUi\LifecycleTriggeredPermissionsUi.csproj", "{106392C3-43E2-475B-A009-3148AC145C8E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BLEPoc", "BLEPoc\BLEPoc.csproj", "{972D76D8-0B08-4086-BBC2-BA7F251A5A07}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,11 @@ Global
 		{106392C3-43E2-475B-A009-3148AC145C8E}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{106392C3-43E2-475B-A009-3148AC145C8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{106392C3-43E2-475B-A009-3148AC145C8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{972D76D8-0B08-4086-BBC2-BA7F251A5A07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{972D76D8-0B08-4086-BBC2-BA7F251A5A07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{972D76D8-0B08-4086-BBC2-BA7F251A5A07}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{972D76D8-0B08-4086-BBC2-BA7F251A5A07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{972D76D8-0B08-4086-BBC2-BA7F251A5A07}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

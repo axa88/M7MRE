@@ -1,3 +1,8 @@
+using Microsoft.Maui;
+using Microsoft.Maui.Hosting;
+
+using System;
+
 // ReSharper disable once CheckNamespace
 namespace DataLayouts;
 

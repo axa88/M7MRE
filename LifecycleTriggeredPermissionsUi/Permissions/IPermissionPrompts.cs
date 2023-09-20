@@ -1,5 +1,4 @@
-﻿// ReSharper disable once CheckNamespace
-namespace MauiAppNet7.Permissions;
+﻿namespace LifecycleTriggeredPermissionsUi.Permissions;
 
 internal interface IPermissionPrompts
 {

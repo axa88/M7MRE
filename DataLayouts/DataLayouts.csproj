@@ -62,6 +62,10 @@
 	  </Compile>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Ui\" />
+	</ItemGroup>
+
 	<ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionDataLayoutsHideInfoBar="True" /></VisualStudio></ProjectExtensions>
 
 </Project>

@@ -1,5 +1,5 @@
 ﻿// ReSharper disable once CheckNamespace
-namespace MauiAppNet7.Permissions;
+namespace DataLayouts.Permissions;
 
 internal partial class LocationPermissions
 {
