@@ -2,8 +2,5 @@
 
 internal class CustomWindow : Window
 {
-	internal CustomWindow(Page page, string title = "") : base(page)
-	{
-		_ = new PageTrace(this, title);
-	}
+	internal CustomWindow(Page page, string title = "") : base(page) => _ = new PageTrace(this, title);
 }
