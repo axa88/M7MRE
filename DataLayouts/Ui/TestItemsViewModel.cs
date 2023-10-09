@@ -31,8 +31,6 @@ public class TestItemsViewModel : INotifyPropertyChanged
 	public ICommand MonkeySelectionChangedCommand => new Command(MonkeySelectionChanged);
 	public ICommand DeleteCommand => new Command<IDisplayItem>(RemoveMonkey);
 
-	private void SumFuc(object b) { Trace.WriteLine($"sum fuc is {b}"); }
-
 	private void CreateFakeItems()
 	{
 		_displayItems.Add(new DisplayItemFolder { Primary = "folder", Secondary = "Africa & Asia", ItemCommand = new Command<object>(SumFuc) });
@@ -51,11 +49,18 @@ public class TestItemsViewModel : INotifyPropertyChanged
 
 		//_displayItems.Add(new DisplayItemTime { Primary = "Squirrel Monkey", Secondary = "Central & South America", ItemCommand = new Command<TimeSpan>(SumFuc), Time = new TimeSpan(0, 8, 3) });
 
-		var digits = new List<int> { 1, 2, 3 };
-		_displayItems.Add(new DisplayItemNumbers(digits, digits) { Primary = "Golden Lion Tamarin", Secondary = "Brazil", Value = 22, ItemCommand = new Command<object>(SumFuc) });
+		var ones = new List<int> { 1 };
+		var tens = new List<int> { 1, 2 };
+		var hundreds = new List<int> { 1, 2, 3 };
+		var displayItemNumbers = new DisplayItemNumbers(new[] { ones, tens, hundreds }) { Primary = "Golden Lion Tamarin", Secondary = "Brazil", ItemCommand = new Command<object>(SumFuc) };
+		_displayItems.Add(displayItemNumbers);
+
+		_displayItems.Add(new DisplayItemEntry { Primary = "An Entry", Secondary = "2nd", TextPlaceHolder = "input goes here", MaxLength = 3, Keyboard = Keyboard.Numeric, ItemCommand = new Command<object>(SumFuc)});
 
 		Items = new ObservableCollection<IDisplayItem>(_displayItems);
 	}
+
+	private static void SumFuc(object b) { Trace.WriteLine($"sum fuc is {b}"); }
 
 	private void FilterItems(string filter)
 	{

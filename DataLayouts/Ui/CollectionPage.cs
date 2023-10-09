@@ -51,6 +51,7 @@ public class DisplayItemDataTemplateSelector : DataTemplateSelector
 	private DisplayItemTemplateMulti DisplayItemTemplateMulti { get; } = new();
 	private DisplayItemTemplateTime DisplayItemTemplateTime { get; } = new();
 	private DisplayItemTemplateNumber DisplayItemTemplateNumber { get; } = new();
+	private DisplayItemTemplateEntry DisplayItemTemplateEntry { get; } = new();
 	private DisplayItemTemplateTypeTwo DisplayItemTemplateTypeTwo { get; } = new();
 
 	protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
@@ -62,6 +63,7 @@ public class DisplayItemDataTemplateSelector : DataTemplateSelector
 			DisplayItemMulti _ => DisplayItemTemplateMulti,
 			DisplayItemTime _ => DisplayItemTemplateTime,
 			DisplayItemNumbers _ => DisplayItemTemplateNumber,
+			DisplayItemEntry _ => DisplayItemTemplateEntry,
 			_ => DisplayItemTemplateTypeTwo
 		};
 	}
@@ -130,7 +132,6 @@ public class DisplayItemTemplateTime : DataTemplate
 			picker.SetBinding(TimePicker.TimeProperty, nameof(DisplayItemTime.Time), BindingMode.TwoWay);
 
 			VerticalStackLayout horizontalStackLayoutOuter = new() { Children = { new BaseLayout(), picker } };
-
 			return new OuterBorder(horizontalStackLayoutOuter);
 		};
 	}
@@ -150,19 +151,19 @@ public class DisplayItemTemplateNumber : DataTemplate
 			Picker picker4 = new() { HorizontalTextAlignment = TextAlignment.Center };
 			Picker picker5 = new() { HorizontalTextAlignment = TextAlignment.Center };
 
-			picker0.SetBinding(Picker.ItemsSourceProperty, nameof(DisplayItemNumbers.AvailableDigits0));
-			picker1.SetBinding(Picker.ItemsSourceProperty, nameof(DisplayItemNumbers.AvailableDigits1));
-			picker2.SetBinding(Picker.ItemsSourceProperty, nameof(DisplayItemNumbers.AvailableDigits2));
-			picker3.SetBinding(Picker.ItemsSourceProperty, nameof(DisplayItemNumbers.AvailableDigits3));
-			picker4.SetBinding(Picker.ItemsSourceProperty, nameof(DisplayItemNumbers.AvailableDigits4));
-			picker5.SetBinding(Picker.ItemsSourceProperty, nameof(DisplayItemNumbers.AvailableDigits5));
+			picker0.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DisplayItemNumbers.AvailableDigits)}[0]");
+			picker1.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DisplayItemNumbers.AvailableDigits)}[1]");
+			picker2.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DisplayItemNumbers.AvailableDigits)}[2]");
+			picker3.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DisplayItemNumbers.AvailableDigits)}[3]");
+			picker4.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DisplayItemNumbers.AvailableDigits)}[4]");
+			picker5.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DisplayItemNumbers.AvailableDigits)}[5]");
 
-			picker0.ItemDisplayBinding = new Binding(nameof(INumberItem.DisplayValue));
-			picker1.ItemDisplayBinding = new Binding(nameof(INumberItem.DisplayValue));
-			picker2.ItemDisplayBinding = new Binding(nameof(INumberItem.DisplayValue));
-			picker3.ItemDisplayBinding = new Binding(nameof(INumberItem.DisplayValue));
-			picker4.ItemDisplayBinding = new Binding(nameof(INumberItem.DisplayValue));
-			picker5.ItemDisplayBinding = new Binding(nameof(INumberItem.DisplayValue));
+			picker0.ItemDisplayBinding = new Binding(nameof(IDigit.DisplayValue));
+			picker1.ItemDisplayBinding = new Binding(nameof(IDigit.DisplayValue));
+			picker2.ItemDisplayBinding = new Binding(nameof(IDigit.DisplayValue));
+			picker3.ItemDisplayBinding = new Binding(nameof(IDigit.DisplayValue));
+			picker4.ItemDisplayBinding = new Binding(nameof(IDigit.DisplayValue));
+			picker5.ItemDisplayBinding = new Binding(nameof(IDigit.DisplayValue));
 
 			picker0.SetBinding(Picker.SelectedItemProperty, $"{nameof(DisplayItemNumbers.SelectedDigits)}[0]");
 			picker1.SetBinding(Picker.SelectedItemProperty, $"{nameof(DisplayItemNumbers.SelectedDigits)}[1]");
@@ -183,13 +184,33 @@ public class DisplayItemTemplateNumber : DataTemplate
 			Button submitButton = new() { Text = "Submit" };
 			submitButton.SetBinding(Button.CommandProperty, nameof(DisplayItemNumbers.SubmitCommand));
 
-			VerticalStackLayout horizontalStackLayoutOuter = new() { Children = { new BaseLayout(), pickerLayout, submitButton } };
-
-			return new OuterBorder(horizontalStackLayoutOuter);
+			VerticalStackLayout verticalStackLayout = new() { Children = { new BaseLayout(), pickerLayout, submitButton } };
+			return new OuterBorder(verticalStackLayout);
 		};
 	}
 }
 
+
+public class DisplayItemTemplateEntry : DataTemplate
+{
+	public DisplayItemTemplateEntry()
+	{
+		LoadTemplate = () =>
+		{
+			Entry entry = new() { ClearButtonVisibility = ClearButtonVisibility.WhileEditing, ReturnType = ReturnType.Send };
+			entry.SetBinding(Entry.TextProperty, nameof(DisplayItemEntry.Text));
+			entry.SetBinding(Entry.TextColorProperty, nameof(DisplayItemEntry.TextColor));
+			entry.SetBinding(Entry.PlaceholderProperty, nameof(DisplayItemEntry.TextPlaceHolder));
+			entry.SetBinding(Entry.MaxLengthProperty, nameof(DisplayItemEntry.MaxLength));
+			entry.SetBinding(Entry.KeyboardProperty, nameof(DisplayItemEntry.Keyboard));
+			entry.SetBinding(Entry.ReturnCommandProperty, nameof(DisplayItemEntry.SubmitCommand));
+			entry.SetBinding(Entry.ReturnCommandParameterProperty, nameof(DisplayItemEntry.Text));
+
+			VerticalStackLayout verticalStackLayout = new() { Children = { new BaseLayout(), entry } };
+			return new OuterBorder(verticalStackLayout);
+		};
+	}
+}
 
 public class DisplayItemTemplateTypeTwo : DataTemplate
 {

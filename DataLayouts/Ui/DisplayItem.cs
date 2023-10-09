@@ -1,4 +1,6 @@
-﻿using System.Windows.Input;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows.Input;
 
 
 namespace DataLayouts.Ui;
@@ -72,71 +74,45 @@ public class DisplayItemTime : DisplayItemBase
 }
 
 
-public class DisplayItemNumbers : DisplayItemBase
+public class DisplayItemNumbers : DisplayItemBase, INotifyPropertyChanged
 {
 	private const int _maxDigits = 6;
 	private readonly int _displayedDigits;
-	private readonly IList<INumberItem>[] _availableDigits = new IList<INumberItem>[_maxDigits];
 
-	public DisplayItemNumbers(IList<int> digits0, IList<int> digits1 = null, IList<int> digits2 = null, IList<int> digits3 = null, IList<int> digits4 = null, IList<int> digits5 = null)
+	/// <summary>
+	/// Base digit picker
+	/// </summary>
+	/// <param name="digits"> Jagged Array of up to 6 lists of digits to display in up to 6 separate pickers.
+	/// Little Endian from right to left 0 = LSB, n = MSB </param>
+	/// <exception cref="ArgumentNullException"></exception>
+	public DisplayItemNumbers(IReadOnlyList<IReadOnlyList<int>> digits)
 	{
-		if (digits0 != null && digits0.Any())
+		if (digits == null || !digits.Any())
+			throw new ArgumentNullException(nameof(digits));
+
+		for (var i = 0; i < digits.Count; i++)
 		{
-			AvailableDigits0 = new List<INumberItem>(digits0.Select(i => new DisplayDigit(i)));
-			IsVisible[0] = true;
-			_displayedDigits++;
+			if (digits[i] != null && digits[i].Any())
+			{
+				AvailableDigits[i] = digits[i].Select(j => new Digit(j)).ToArray();
+				IsVisible[i] = true;
+				_displayedDigits++;
+			}
 		}
 
-		if (digits1 != null && digits1.Any())
-		{
-			AvailableDigits1 = new List<INumberItem>(digits1.Select(i => new DisplayDigit(i)));
-			IsVisible[1] = true;
-			_displayedDigits++;
-		}
+		SubmitCommand = new Command(() => ItemCommand.Execute(Value), () => Value != 111 );
 
-		if (digits2 != null && digits2.Any())
-		{
-			AvailableDigits2 = new List<INumberItem>(digits2.Select(i => new DisplayDigit(i)));
-			IsVisible[2] = true;
-			_displayedDigits++;
-		}
-
-		if (digits3 != null && digits3.Any())
-		{
-			AvailableDigits3 = new List<INumberItem>(digits3.Select(i => new DisplayDigit(i)));
-			IsVisible[3] = true;
-			_displayedDigits++;
-		}
-
-		if (digits4 != null && digits4.Any())
-		{
-			AvailableDigits4 = new List<INumberItem>(digits4.Select(i => new DisplayDigit(i)));
-			IsVisible[4] = true;
-			_displayedDigits++;
-		}
-
-		if (digits5 != null && digits5.Any())
-		{
-			AvailableDigits5 = new List<INumberItem>(digits5.Select(i => new DisplayDigit(i)));
-			IsVisible[5] = true;
-			_displayedDigits++;
-		}
-
-		SubmitCommand = new Command(() => ItemCommand.Execute(Value));
+		// force change notification cuz change of array elements do not trigger property change notification. Therefore notification is possibly only sent on initial creation
+		OnPropertyChanged(nameof(AvailableDigits));
 	}
 
-	#region Available
-	public IList<INumberItem> AvailableDigits0 { get => _availableDigits[0]; set => _availableDigits[0] = value; }
-	public IList<INumberItem> AvailableDigits1 { get => _availableDigits[1]; set => _availableDigits[1] = value; }
-	public IList<INumberItem> AvailableDigits2 { get => _availableDigits[2]; set => _availableDigits[2] = value; }
-	public IList<INumberItem> AvailableDigits3 { get => _availableDigits[3]; set => _availableDigits[3] = value; }
-	public IList<INumberItem> AvailableDigits4 { get => _availableDigits[4]; set => _availableDigits[4] = value; }
-	public IList<INumberItem> AvailableDigits5 { get => _availableDigits[5]; set => _availableDigits[5] = value; }
-	#endregion
+	public IDigit[][] AvailableDigits { get; init; } = new IDigit[_maxDigits][];
 
-	public INumberItem[] SelectedDigits { get; init; } = new INumberItem[_maxDigits];
+	public IDigit[] SelectedDigits { get; init; } = new IDigit[_maxDigits];
 
-	public bool[] IsVisible { get; set; } = new bool[_maxDigits];
+	public bool[] IsVisible { get; init; } = new bool[_maxDigits];
+
+	public ICommand SubmitCommand { get; init; }
 
 	public int Value
 	{
@@ -144,46 +120,105 @@ public class DisplayItemNumbers : DisplayItemBase
 		{
 			var value = 0;
 			for (var i = 0; i < _displayedDigits; i++)
-				value += (int)SelectedDigits[i].RawValue * (int)Math.Pow(10, i);
+			{
+				if (SelectedDigits[i] != null && SelectedDigits[i].RawValue != null)
+					value += (int)SelectedDigits[i].RawValue * (int)Math.Pow(10, i);
+			}
 			return value;
 		}
-		init => UpdateDisplay(value);
+		set => UpdateValue(value);
 	}
 
-	public ICommand SubmitCommand { get; init; }
-
-	private void UpdateDisplay(int value)
+	private void UpdateValue(int value)
 	{
 		var s = value.ToString();
 		if (s.Length > _displayedDigits)
-			throw new ArgumentOutOfRangeException(nameof(UpdateDisplay), "value too large to display");
+			throw new ArgumentOutOfRangeException(nameof(UpdateValue), "too many digits");
 
 		var reversed = s.Reverse().ToArray();
 		for (var i = 0; i < reversed.Length; i++)
 		{
-			try { SelectedDigits[i]= _availableDigits[i].First(item => item.DisplayValue == $"{reversed[i]}"); }
-			catch { throw new ArgumentOutOfRangeException(nameof(UpdateDisplay), $"Digit {i} does not contain {reversed[i]}"); }
+			try { SelectedDigits[i] = AvailableDigits[i].First(item => item.DisplayValue == $"{reversed[i]}"); }
+			catch { throw new ArgumentOutOfRangeException($"{nameof(AvailableDigits)} does not contain {reversed[i]}"); }
 		}
 	}
+
+	#region INotifyPropertyChanged
+	public event PropertyChangedEventHandler PropertyChanged;
+
+	private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+	{
+		if (EqualityComparer<T>.Default.Equals(field, value))
+			return false;
+
+		field = value;
+		OnPropertyChanged(propertyName);
+		return true;
+	}
+
+	private void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+	#endregion
 }
 
 
-public interface INumberItem
+public class DisplayItemEntry : DisplayItemBase, INotifyPropertyChanged
+{
+	private string _text;
+
+	public DisplayItemEntry() => SubmitCommand = new Command(() => ItemCommand.Execute(Text), () => !string.IsNullOrWhiteSpace(Text));
+
+	public string Text
+	{
+		get => _text;
+		set
+		{
+			SetField(ref _text, value);
+			((Command)SubmitCommand).ChangeCanExecute();
+		}
+	}
+
+	public Color TextColor { get; set; }
+	public string TextPlaceHolder { get; set; }
+	public Keyboard Keyboard { get; set; }
+	public int MaxLength { get; set; }
+
+	public ICommand SubmitCommand { get; init; }
+
+	#region INotifyPropertyChanged
+	public event PropertyChangedEventHandler PropertyChanged;
+
+	private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+	{
+		if (EqualityComparer<T>.Default.Equals(field, value))
+			return false;
+
+		field = value;
+		OnPropertyChanged(propertyName);
+		return true;
+	}
+
+	private void OnPropertyChanged([CallerMemberName] string propertyName = null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); }
+
+	#endregion
+}
+
+public interface IDigit
 {
 	public string DisplayValue { get; init; }
 	public object RawValue { get; }
 }
 
 
-public class DisplayDigit : INumberItem
+public class Digit : IDigit
 {
 	private readonly string _displayValue;
 
-	public DisplayDigit(int value)
+	public Digit(int value)
 	{
 		DisplayValue = value.ToString();
 		if (DisplayValue.Length > 1)
-			throw new ArgumentOutOfRangeException(nameof(DisplayDigit), $"Digit value {value} is too large to represent as a single character");
+			throw new ArgumentOutOfRangeException(nameof(Digit), $"Digit value {value} is too large to represent as a single character");
 	}
 
 	public string DisplayValue
