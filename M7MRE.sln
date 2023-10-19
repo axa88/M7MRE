@@ -3,11 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31611.283
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MauiAppWindowPageLifeCycleDiscrepancies", "MauiAppWindowPageLifeCycleDiscrepancies\MauiAppWindowPageLifeCycleDiscrepancies.csproj", "{AA0CB059-0CCA-43D6-B047-16EE0F16D181}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayouts", "DataLayouts\DataLayouts.csproj", "{79037147-8F2A-4651-89B7-FDC0E9F2E2ED}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LifecycleTriggeredPermissionsUi", "LifecycleTriggeredPermissionsUi\LifecycleTriggeredPermissionsUi.csproj", "{106392C3-43E2-475B-A009-3148AC145C8E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,22 +11,11 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AA0CB059-0CCA-43D6-B047-16EE0F16D181}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AA0CB059-0CCA-43D6-B047-16EE0F16D181}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AA0CB059-0CCA-43D6-B047-16EE0F16D181}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{AA0CB059-0CCA-43D6-B047-16EE0F16D181}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AA0CB059-0CCA-43D6-B047-16EE0F16D181}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AA0CB059-0CCA-43D6-B047-16EE0F16D181}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{79037147-8F2A-4651-89B7-FDC0E9F2E2ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{79037147-8F2A-4651-89B7-FDC0E9F2E2ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79037147-8F2A-4651-89B7-FDC0E9F2E2ED}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{79037147-8F2A-4651-89B7-FDC0E9F2E2ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79037147-8F2A-4651-89B7-FDC0E9F2E2ED}.Release|Any CPU.Build.0 = Release|Any CPU
-		{106392C3-43E2-475B-A009-3148AC145C8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{106392C3-43E2-475B-A009-3148AC145C8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{106392C3-43E2-475B-A009-3148AC145C8E}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{106392C3-43E2-475B-A009-3148AC145C8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{106392C3-43E2-475B-A009-3148AC145C8E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
