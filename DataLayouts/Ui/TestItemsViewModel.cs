@@ -38,24 +38,23 @@ public class TestItemsViewModel : INotifyPropertyChanged
 		_displayItems.Add(new DisplayItemBinary { Primary = "binary", Secondary = "Central & South America", ItemCommand = new Command<object>(SumFuc) });
 
 		var defaultMultiItem = new DisplayItemBase {Primary = "teo"};
-		_displayItems.Add(new DisplayItemMulti { Primary = "Blue Monkey", Secondary = "Central and East Africa", SelectedItem = defaultMultiItem, ItemCommand = new Command<object>(SumFuc),
-			AvailableItems = new List<IDisplayItem>
-			{
-				new DisplayItemBase {Primary = "one"},
-				defaultMultiItem,
-				new DisplayItemBase {Primary = "tree"},
-			}
-		});
+		var listItems = new List<IDisplayItem> { new DisplayItemBase { Primary = "one" }, defaultMultiItem, new DisplayItemBase { Primary = "tree" }, };
+		_displayItems.Add(new DisplayItemMulti(listItems) { Primary = "Blue Monkey", Secondary = "Central and East Africa", SelectedItem = defaultMultiItem, ItemCommand = new Command<object>(SumFuc) });
 
-		//_displayItems.Add(new DisplayItemTime { Primary = "Squirrel Monkey", Secondary = "Central & South America", ItemCommand = new Command<TimeSpan>(SumFuc), Time = new TimeSpan(0, 8, 3) });
+		_displayItems.Add(new DisplayItemTime { Primary = "Squirrel Monkey", Secondary = "Central & South America", ItemCommand = new Command<object>(SumFuc), Time = new TimeSpan(0, 8, 3) });
 
-		var ones = new List<int> { 1 };
-		var tens = new List<int> { 1, 2 };
-		var hundreds = new List<int> { 1, 2, 3 };
-		var displayItemNumbers = new DisplayItemNumbers(new[] { ones, tens, hundreds }) { Primary = "Golden Lion Tamarin", Secondary = "Brazil", ItemCommand = new Command<object>(SumFuc) };
-		_displayItems.Add(displayItemNumbers);
+		var digits = new List<int> { 0, 1, 2 };
+		_displayItems.Add(new DisplayItemDigits(new[] { digits, digits, digits }) { Primary = "custom whole", Secondary = "these should be whole", ItemCommand = new Command<object>(SumFuc) });
+
+		var hex = new List<int> { 0x0, 0x1, 0x2, 0xa, 0xb, 0xc };
+		_displayItems.Add(new DisplayItemDigits(new[] { hex, hex }, "X") { Primary = "custom hex", Secondary = "these number should be base 16", ItemCommand = new Command<object>(SumFuc) });
 
 		_displayItems.Add(new DisplayItemEntry { Primary = "An Entry", Secondary = "2nd", TextPlaceHolder = "input goes here", MaxLength = 3, Keyboard = Keyboard.Numeric, ItemCommand = new Command<object>(SumFuc)});
+
+		_displayItems.Add(new DisplayItemDigits(4, "x") { Primary = "built in hex", Value = 0xFF, ItemCommand = new Command<object>(SumFuc)});
+		_displayItems.Add(new DisplayItemDigits(4, "X") { Primary = "built in hex", Value = 0xFF, ItemCommand = new Command<object>(SumFuc)});
+		_displayItems.Add(new DisplayItemDigits(4, "B") { Primary = "built in binary", Value = 0b_1100, ItemCommand = new Command<object>(SumFuc)});
+		_displayItems.Add(new DisplayItemDigits(4, "D") { Primary = "built in whole", Value = 1234, ItemCommand = new Command<object>(SumFuc)});
 
 		Items = new ObservableCollection<IDisplayItem>(_displayItems);
 	}
@@ -68,16 +67,9 @@ public class TestItemsViewModel : INotifyPropertyChanged
 		foreach (var item in _displayItems)
 		{
 			if (!filteredItems.Contains(item))
-			{
 				Items.Remove(item);
-			}
-			else
-			{
-				if (!Items.Contains(item))
-				{
-					Items.Add(item);
-				}
-			}
+			else if (!Items.Contains(item))
+				Items.Add(item);
 		}
 	}
 

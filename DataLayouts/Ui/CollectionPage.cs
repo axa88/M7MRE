@@ -1,10 +1,18 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Globalization;
 
 using Microsoft.Maui.Controls.Shapes;
 
 using static Microsoft.Maui.Controls.VisualStateManager;
 
+using Button = Microsoft.Maui.Controls.Button;
 using Switch = Microsoft.Maui.Controls.Switch;
+using TimePicker = Microsoft.Maui.Controls.TimePicker;
+
+#if ANDROID
+using Android.Widget;
+#endif
 
 
 namespace DataLayouts.Ui;
@@ -16,6 +24,17 @@ internal class CollectionPage : ContentPage
 		Content = new Grid { Margin = 20, Children = { new CollectionViewCustom() } };
 		var testItemsModel = new TestItemsViewModel();
 		BindingContext = testItemsModel;
+
+		Microsoft.Maui.Handlers.PickerHandler.Mapper.AppendToMapping("MyCustomization", (handler, view) =>
+		{
+		#if ANDROID
+			if (handler.PlatformView is EditText edit)
+			{
+				edit.Focusable = false;
+				edit.FocusableInTouchMode = false;
+			}
+		#endif
+		});
 
 		//Setter textColorSetter = new() { TargetName = ???, Property = Label.TextColorProperty, Value = Colors.Red };
 		Setter backgroundColorSetter = new() { Property = BackgroundColorProperty, Value = Colors.LightSkyBlue };
@@ -50,9 +69,8 @@ public class DisplayItemDataTemplateSelector : DataTemplateSelector
 	private DisplayItemTemplateBinary DisplayItemTemplateBinary { get; } = new();
 	private DisplayItemTemplateMulti DisplayItemTemplateMulti { get; } = new();
 	private DisplayItemTemplateTime DisplayItemTemplateTime { get; } = new();
-	private DisplayItemTemplateNumber DisplayItemTemplateNumber { get; } = new();
+	private DisplayItemTemplateDigits DisplayItemTemplateDigits { get; } = new();
 	private DisplayItemTemplateEntry DisplayItemTemplateEntry { get; } = new();
-	private DisplayItemTemplateTypeTwo DisplayItemTemplateTypeTwo { get; } = new();
 
 	protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
 	{
@@ -62,9 +80,9 @@ public class DisplayItemDataTemplateSelector : DataTemplateSelector
 			DisplayItemBinary _ => DisplayItemTemplateBinary,
 			DisplayItemMulti _ => DisplayItemTemplateMulti,
 			DisplayItemTime _ => DisplayItemTemplateTime,
-			DisplayItemNumbers _ => DisplayItemTemplateNumber,
+			DisplayItemDigits _ => DisplayItemTemplateDigits,
 			DisplayItemEntry _ => DisplayItemTemplateEntry,
-			_ => DisplayItemTemplateTypeTwo
+			_ => throw new NotImplementedException(nameof(DisplayItemDataTemplateSelector))
 		};
 	}
 }
@@ -128,7 +146,12 @@ public class DisplayItemTemplateTime : DataTemplate
 	{
 		LoadTemplate = () =>
 		{
-			TimePicker picker = new() { Margin = new Thickness(10), Format = "H" };
+#if ANDROID
+			TimePicker picker = new();
+#else
+			TimePicker picker = new() { Format = "H" };
+#endif
+
 			picker.SetBinding(TimePicker.TimeProperty, nameof(DisplayItemTime.Time), BindingMode.TwoWay);
 
 			VerticalStackLayout horizontalStackLayoutOuter = new() { Children = { new BaseLayout(), picker } };
@@ -138,9 +161,9 @@ public class DisplayItemTemplateTime : DataTemplate
 }
 
 
-public class DisplayItemTemplateNumber : DataTemplate
+public class DisplayItemTemplateDigits : DataTemplate
 {
-	public DisplayItemTemplateNumber()
+	public DisplayItemTemplateDigits()
 	{
 		LoadTemplate = () =>
 		{
@@ -151,12 +174,12 @@ public class DisplayItemTemplateNumber : DataTemplate
 			Picker picker4 = new() { HorizontalTextAlignment = TextAlignment.Center };
 			Picker picker5 = new() { HorizontalTextAlignment = TextAlignment.Center };
 
-			picker0.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DisplayItemNumbers.AvailableDigits)}[0]");
-			picker1.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DisplayItemNumbers.AvailableDigits)}[1]");
-			picker2.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DisplayItemNumbers.AvailableDigits)}[2]");
-			picker3.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DisplayItemNumbers.AvailableDigits)}[3]");
-			picker4.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DisplayItemNumbers.AvailableDigits)}[4]");
-			picker5.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DisplayItemNumbers.AvailableDigits)}[5]");
+			picker0.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DisplayItemDigits.AvailableDigits)}[0]");
+			picker1.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DisplayItemDigits.AvailableDigits)}[1]");
+			picker2.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DisplayItemDigits.AvailableDigits)}[2]");
+			picker3.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DisplayItemDigits.AvailableDigits)}[3]");
+			picker4.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DisplayItemDigits.AvailableDigits)}[4]");
+			picker5.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DisplayItemDigits.AvailableDigits)}[5]");
 
 			picker0.ItemDisplayBinding = new Binding(nameof(IDigit.DisplayValue));
 			picker1.ItemDisplayBinding = new Binding(nameof(IDigit.DisplayValue));
@@ -165,26 +188,27 @@ public class DisplayItemTemplateNumber : DataTemplate
 			picker4.ItemDisplayBinding = new Binding(nameof(IDigit.DisplayValue));
 			picker5.ItemDisplayBinding = new Binding(nameof(IDigit.DisplayValue));
 
-			picker0.SetBinding(Picker.SelectedItemProperty, $"{nameof(DisplayItemNumbers.SelectedDigits)}[0]");
-			picker1.SetBinding(Picker.SelectedItemProperty, $"{nameof(DisplayItemNumbers.SelectedDigits)}[1]");
-			picker2.SetBinding(Picker.SelectedItemProperty, $"{nameof(DisplayItemNumbers.SelectedDigits)}[2]");
-			picker3.SetBinding(Picker.SelectedItemProperty, $"{nameof(DisplayItemNumbers.SelectedDigits)}[3]");
-			picker4.SetBinding(Picker.SelectedItemProperty, $"{nameof(DisplayItemNumbers.SelectedDigits)}[4]");
-			picker5.SetBinding(Picker.SelectedItemProperty, $"{nameof(DisplayItemNumbers.SelectedDigits)}[5]");
+			DigitMultiValueConverter<IDigit> digitMuVaCo = new();
+			picker0.SetBinding(Picker.SelectedItemProperty, new MultiBinding { Converter = digitMuVaCo, Mode = BindingMode.TwoWay, Bindings = new Collection<BindingBase> { new Binding($"{nameof(DisplayItemDigits.SelectedDigits)}[0]"), new Binding(nameof(DisplayItemDigits.SelectedDigitChange), BindingMode.OneWayToSource) } });
+			picker1.SetBinding(Picker.SelectedItemProperty, new MultiBinding { Converter = digitMuVaCo, Mode = BindingMode.TwoWay, Bindings = new Collection<BindingBase> { new Binding($"{nameof(DisplayItemDigits.SelectedDigits)}[1]"), new Binding(nameof(DisplayItemDigits.SelectedDigitChange), BindingMode.OneWayToSource) } });
+			picker2.SetBinding(Picker.SelectedItemProperty, new MultiBinding { Converter = digitMuVaCo, Mode = BindingMode.TwoWay, Bindings = new Collection<BindingBase> { new Binding($"{nameof(DisplayItemDigits.SelectedDigits)}[2]"), new Binding(nameof(DisplayItemDigits.SelectedDigitChange), BindingMode.OneWayToSource) } });
+			picker3.SetBinding(Picker.SelectedItemProperty, new MultiBinding { Converter = digitMuVaCo, Mode = BindingMode.TwoWay, Bindings = new Collection<BindingBase> { new Binding($"{nameof(DisplayItemDigits.SelectedDigits)}[3]"), new Binding(nameof(DisplayItemDigits.SelectedDigitChange), BindingMode.OneWayToSource) } });
+			picker4.SetBinding(Picker.SelectedItemProperty, new MultiBinding { Converter = digitMuVaCo, Mode = BindingMode.TwoWay, Bindings = new Collection<BindingBase> { new Binding($"{nameof(DisplayItemDigits.SelectedDigits)}[4]"), new Binding(nameof(DisplayItemDigits.SelectedDigitChange), BindingMode.OneWayToSource) } });
+			picker5.SetBinding(Picker.SelectedItemProperty, new MultiBinding { Converter = digitMuVaCo, Mode = BindingMode.TwoWay, Bindings = new Collection<BindingBase> { new Binding($"{nameof(DisplayItemDigits.SelectedDigits)}[5]"), new Binding(nameof(DisplayItemDigits.SelectedDigitChange), BindingMode.OneWayToSource) } });
 
-			picker0.SetBinding(Picker.IsVisibleProperty, $"{nameof(DisplayItemNumbers.IsVisible)}[0]");
-			picker1.SetBinding(Picker.IsVisibleProperty, $"{nameof(DisplayItemNumbers.IsVisible)}[1]");
-			picker2.SetBinding(Picker.IsVisibleProperty, $"{nameof(DisplayItemNumbers.IsVisible)}[2]");
-			picker3.SetBinding(Picker.IsVisibleProperty, $"{nameof(DisplayItemNumbers.IsVisible)}[3]");
-			picker4.SetBinding(Picker.IsVisibleProperty, $"{nameof(DisplayItemNumbers.IsVisible)}[4]");
-			picker5.SetBinding(Picker.IsVisibleProperty, $"{nameof(DisplayItemNumbers.IsVisible)}[5]");
+			picker0.SetBinding(Picker.IsVisibleProperty, $"{nameof(DisplayItemDigits.IsVisible)}[0]");
+			picker1.SetBinding(Picker.IsVisibleProperty, $"{nameof(DisplayItemDigits.IsVisible)}[1]");
+			picker2.SetBinding(Picker.IsVisibleProperty, $"{nameof(DisplayItemDigits.IsVisible)}[2]");
+			picker3.SetBinding(Picker.IsVisibleProperty, $"{nameof(DisplayItemDigits.IsVisible)}[3]");
+			picker4.SetBinding(Picker.IsVisibleProperty, $"{nameof(DisplayItemDigits.IsVisible)}[4]");
+			picker5.SetBinding(Picker.IsVisibleProperty, $"{nameof(DisplayItemDigits.IsVisible)}[5]");
 
 			HorizontalStackLayout pickerLayout = new() {Children = { picker5, picker4, picker3, picker2, picker1, picker0 } };
 
 			Button submitButton = new() { Text = "Submit" };
-			submitButton.SetBinding(Button.CommandProperty, nameof(DisplayItemNumbers.SubmitCommand));
+			submitButton.SetBinding(Button.CommandProperty, nameof(DisplayItemDigits.SubmitCommand));
 
-			VerticalStackLayout verticalStackLayout = new() { Children = { new BaseLayout(), pickerLayout, submitButton } };
+			VerticalStackLayout verticalStackLayout = new() { Children = { new BaseLayout(), pickerLayout, /*submitButton*/ } };
 			return new OuterBorder(verticalStackLayout);
 		};
 	}
@@ -208,36 +232,6 @@ public class DisplayItemTemplateEntry : DataTemplate
 
 			VerticalStackLayout verticalStackLayout = new() { Children = { new BaseLayout(), entry } };
 			return new OuterBorder(verticalStackLayout);
-		};
-	}
-}
-
-public class DisplayItemTemplateTypeTwo : DataTemplate
-{
-	public DisplayItemTemplateTypeTwo()
-	{
-		LoadTemplate = () =>
-		{
-			Grid grid = new() { Padding = 10 };
-			grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-			grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-			grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-			grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-
-			Image image = new() { Aspect = Aspect.AspectFill, HeightRequest = 60, WidthRequest = 60 };
-
-			Label nameLabel = new() { FontAttributes = FontAttributes.Bold, BackgroundColor = Colors.LightGreen };
-			nameLabel.SetBinding(Label.TextProperty, "Primary");
-
-			Label locationLabel = new() { FontAttributes = FontAttributes.Italic, VerticalOptions = LayoutOptions.End };
-			locationLabel.SetBinding(Label.TextProperty, "Secondary");
-
-			Grid.SetRowSpan(image, 2);
-
-			grid.Add(image);
-			grid.Add(nameLabel, 1);
-			grid.Add(locationLabel, 1, 1);
-			return grid;
 		};
 	}
 }
@@ -270,4 +264,35 @@ public class OuterBorder : Border
 			{ new() { Color = Colors.Orange, Offset = 0.1f }, new() { Color = Colors.Brown, Offset = 1.0f } } };
 		Content = content;
 	}
+}
+
+
+public class DigitMultiValueConverter<T> : IMultiValueConverter
+{
+	// source: IDigit SelectedDigit, object SelectedDigitChange <> target: object SelectedItem
+
+	#region Implementation of IMultiValueConverter
+
+	/// <summary>
+	/// Convert date from source to target
+	/// </summary>
+	/// <param name="values"></param>
+	/// <param name="targetType"></param>
+	/// <param name="parameter"></param>
+	/// <param name="culture"></param>
+	/// <returns></returns>
+	public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) { return values?.FirstOrDefault(o => o is T); }
+
+	/// <summary>
+	/// convert from target to source
+	/// </summary>
+	/// <param name="value"></param>
+	/// <param name="targetTypes"></param>
+	/// <param name="parameter"></param>
+	/// <param name="culture"></param>
+	/// <returns></returns>
+	/// <exception cref="NotImplementedException"></exception>
+	public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) => targetTypes.Select(_ => value).ToArray();
+
+	#endregion
 }
