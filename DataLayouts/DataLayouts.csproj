@@ -56,12 +56,6 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Compile Update="SecondPage.xaml.cs">
-	    <DependentUpon>SecondPage.xaml</DependentUpon>
-	  </Compile>
-	</ItemGroup>
-
 	<ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionDataLayoutsHideInfoBar="True" /></VisualStudio></ProjectExtensions>
 
 </Project>

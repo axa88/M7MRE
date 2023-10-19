@@ -1,13 +1,9 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Globalization;
 
 using Microsoft.Maui.Controls.Shapes;
 
-using static Microsoft.Maui.Controls.VisualStateManager;
-
 using Button = Microsoft.Maui.Controls.Button;
-using Switch = Microsoft.Maui.Controls.Switch;
 using TimePicker = Microsoft.Maui.Controls.TimePicker;
 
 #if ANDROID
@@ -35,14 +31,6 @@ internal class CollectionPage : ContentPage
 			}
 		#endif
 		});
-
-		//Setter textColorSetter = new() { TargetName = ???, Property = Label.TextColorProperty, Value = Colors.Red };
-		Setter backgroundColorSetter = new() { Property = BackgroundColorProperty, Value = Colors.LightSkyBlue };
-		VisualState stateSelected = new() { Name = CommonStates.Selected, Setters = { backgroundColorSetter /*, textColorSetter*/ } };
-		VisualState stateNormal = new() { Name = CommonStates.Normal }; // VisualStateGroup always requires a "Normal" VisualState entry.
-		VisualStateGroup visualStateGroup = new() { Name = nameof(CommonStates), States = { stateSelected, stateNormal } };
-		Style style = new(typeof(Grid)) { Setters = { new() { Property = VisualStateGroupsProperty, Value = new VisualStateGroupList { visualStateGroup } } } }; // applies to anything within the type (Grid)
-		Resources.Add(style);
 	}
 }
 
@@ -56,18 +44,13 @@ internal class CollectionViewCustom : CollectionView
 
 		ItemsLayout = new LinearItemsLayout(ItemsLayoutOrientation.Vertical) { ItemSpacing = 2 };
 		VerticalScrollBarVisibility = ScrollBarVisibility.Always;
-		SelectionMode = SelectionMode.Single;
-		SelectionChanged += (sender, selectionChangedEventArgs) => Trace.WriteLine($"{nameof(SelectionChanged)}");
-		SelectionChangedCommand = new Command<object>(o => Trace.WriteLine($"{nameof(SelectionChangedCommand)} : {o}"));
+		SelectionMode = SelectionMode.None;
 	}
 }
 
 
 public class DisplayItemDataTemplateSelector : DataTemplateSelector
 {
-	private DisplayItemTemplateFolder DisplayItemTemplateFolder { get; } = new();
-	private DisplayItemTemplateBinary DisplayItemTemplateBinary { get; } = new();
-	private DisplayItemTemplateMulti DisplayItemTemplateMulti { get; } = new();
 	private DisplayItemTemplateTime DisplayItemTemplateTime { get; } = new();
 	private DisplayItemTemplateDigits DisplayItemTemplateDigits { get; } = new();
 	private DisplayItemTemplateEntry DisplayItemTemplateEntry { get; } = new();
@@ -76,65 +59,10 @@ public class DisplayItemDataTemplateSelector : DataTemplateSelector
 	{
 		return item switch
 		{
-			DisplayItemFolder _ => DisplayItemTemplateFolder,
-			DisplayItemBinary _ => DisplayItemTemplateBinary,
-			DisplayItemMulti _ => DisplayItemTemplateMulti,
 			DisplayItemTime _ => DisplayItemTemplateTime,
 			DisplayItemDigits _ => DisplayItemTemplateDigits,
 			DisplayItemEntry _ => DisplayItemTemplateEntry,
 			_ => throw new NotImplementedException(nameof(DisplayItemDataTemplateSelector))
-		};
-	}
-}
-
-
-public class DisplayItemTemplateFolder : DataTemplate
-{
-	public DisplayItemTemplateFolder()
-	{
-		LoadTemplate = () =>
-		{
-			var outerBorder = new OuterBorder(new BaseLayout());
-			var tapGestureRecognizer = new TapGestureRecognizer { NumberOfTapsRequired = 2 };
-			tapGestureRecognizer.SetBinding(TapGestureRecognizer.CommandProperty, nameof(IDisplayItem.ItemCommand));
-			outerBorder.GestureRecognizers.Add(tapGestureRecognizer);
-			return outerBorder;
-		};
-	}
-}
-
-
-public class DisplayItemTemplateBinary : DataTemplate
-{
-	public DisplayItemTemplateBinary()
-	{
-		LoadTemplate = () =>
-		{
-			Switch @switch = new() { Margin = new Thickness(10), HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Center };
-			@switch.SetBinding(Switch.IsToggledProperty, nameof(DisplayItemBinary.IsOn), BindingMode.TwoWay);
-
-			HorizontalStackLayout horizontalStackLayout = new() { Children = { new BaseLayout(), @switch } };
-
-			return new OuterBorder(horizontalStackLayout);
-		};
-	}
-}
-
-
-public class DisplayItemTemplateMulti : DataTemplate
-{
-	public DisplayItemTemplateMulti()
-	{
-		LoadTemplate = () =>
-		{
-			Picker picker = new() { Margin = new Thickness(10), Title = "Picker Title" };
-			picker.SetBinding(Picker.ItemsSourceProperty, nameof(DisplayItemMulti.AvailableItems)); // items available for selection
-			picker.ItemDisplayBinding = new Binding(nameof(IDisplayItem.Primary)); // display selected
-			picker.SetBinding(Picker.SelectedItemProperty, nameof(DisplayItemMulti.SelectedItem)); // act upon and store when selected changes
-
-			VerticalStackLayout horizontalStackLayoutOuter = new() { Children = { new BaseLayout(), picker } };
-
-			return new OuterBorder(horizontalStackLayoutOuter);
 		};
 	}
 }

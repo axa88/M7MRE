@@ -9,7 +9,6 @@ public interface IDisplayItem
 {
 	public string Primary { get; set; }
 	public string Secondary { get; set; }
-	public Command<object> ItemCommand { get; set; }
 }
 
 
@@ -18,50 +17,6 @@ public class DisplayItemBase : IDisplayItem
 	public string Primary { get; set; }
 	public string Secondary { get; set; }
 	public Command<object> ItemCommand { get; set; }
-}
-
-
-public class DisplayItemFolder : DisplayItemBase { }
-
-
-public class DisplayItemBinary : DisplayItemBase
-{
-	private bool _isOn;
-
-	public bool IsOn
-	{
-		get => _isOn;
-		set
-		{
-			_isOn = value;
-			ItemCommand?.Execute(_isOn);
-		}
-	}
-}
-
-
-public class DisplayItemMulti : DisplayItemBase
-{
-	private IDisplayItem _selectedItem;
-
-	public DisplayItemMulti(IList<IDisplayItem> listItems)
-	{
-		if (listItems == null || !listItems.Any())
-			throw new ArgumentNullException(nameof(listItems));
-
-		AvailableItems = listItems;
-	}
-	public IList<IDisplayItem> AvailableItems { get; set; }
-
-	public IDisplayItem SelectedItem
-	{
-		get => _selectedItem;
-		set
-		{
-			_selectedItem = value;
-			ItemCommand?.Execute(_selectedItem.Primary);
-		}
-	}
 }
 
 

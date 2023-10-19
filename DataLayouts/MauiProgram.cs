@@ -1,6 +1,4 @@
-﻿using Microsoft.Maui.LifecycleEvents;
-
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 
 
 namespace DataLayouts;
@@ -20,15 +18,9 @@ public static class MauiProgram
 				// ReSharper restore StringLiteralTypo
 			});
 
-	#if ANDROID
-		builder.ConfigureLifecycleEvents(lifecycleBuilder => lifecycleBuilder.AddAndroid(androidLifecycleBuilder => androidLifecycleBuilder.OnDestroy(activity => Permissions.PermissionsProcessor.OnWindowDestroying(activity))));
-	#endif
-
 	#if DEBUG
 		builder.Logging.AddDebug();
 	#endif
-
-		_ = new PageTrace(builder);
 
 		return builder.Build();
 	}
