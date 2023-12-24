@@ -1,10 +1,11 @@
-﻿namespace BLEPoc;
+﻿using Microsoft.Maui.Devices;
+namespace BLEPoC.Ui.Pages;
 
 internal class FlyoutCustom : FlyoutPage
 {
 	internal FlyoutCustom(string title = "")
 	{
-		_ = new PageTrace(this, title);
+		_ = new LifeCycleTracing(this, title);
 
 		Flyout = new MainPage(null, true, true, $"Flyout({title})");
 		Detail = new SecondPage(true, true, $"Detail({title})");

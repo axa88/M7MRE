@@ -1,7 +1,7 @@
 ﻿using static Microsoft.Maui.ApplicationModel.Permissions;
 
 
-namespace BLEPoc.Permissions;
+namespace BLEPoC.Permissions;
 
 internal partial class BluetoothPermissions : BasePlatformPermission, IPermissionPrompts
 {

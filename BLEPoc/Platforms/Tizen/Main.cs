@@ -4,7 +4,7 @@ using Microsoft.Maui.Hosting;
 using System;
 
 // ReSharper disable once CheckNamespace
-namespace BLEPoc;
+namespace DataLayouts;
 
 internal class Program : MauiApplication
 {

@@ -1,9 +1,10 @@
-﻿using Microsoft.Maui.LifecycleEvents;
+﻿using BLEPoC.Permissions;
 
 using Microsoft.Extensions.Logging;
+using Microsoft.Maui.LifecycleEvents;
 
 
-namespace BLEPoc;
+namespace BLEPoC;
 
 public static class MauiProgram
 {
@@ -14,21 +15,21 @@ public static class MauiProgram
 			.UseMauiApp<App>()
 			.ConfigureFonts(fonts =>
 			{
-				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+				fonts.AddFont("OpenSans-Regular.ttf", "OpenSans-Regular");
 				// ReSharper disable StringLiteralTypo
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 				// ReSharper restore StringLiteralTypo
 			});
 
 	#if ANDROID
-		builder.ConfigureLifecycleEvents(lifecycleBuilder => lifecycleBuilder.AddAndroid(androidLifecycleBuilder => androidLifecycleBuilder.OnDestroy(activity => BLEPoc.Permissions.PermissionsProcessor.OnWindowDestroying(activity))));
+		builder.ConfigureLifecycleEvents(lifecycleBuilder => lifecycleBuilder.AddAndroid(androidLifecycleBuilder => androidLifecycleBuilder.OnDestroy(activity => PermissionsProcessor.Instance.OnWindowDestroying(activity))));
 	#endif
 
 	#if DEBUG
 		builder.Logging.AddDebug();
 	#endif
 
-		_ = new PageTrace(builder);
+		_ = new LifeCycleTracing(builder);
 
 		return builder.Build();
 	}

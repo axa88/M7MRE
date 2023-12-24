@@ -1,19 +1,46 @@
 ﻿using System.Diagnostics;
 
 using static Microsoft.Maui.ApplicationModel.Permissions;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Devices;
 
 
-namespace BLEPoc.Permissions;
+namespace BLEPoC.Permissions;
 
-internal static class PermissionsProcessor
+internal sealed class PermissionsProcessor
 {
-	private static readonly Dictionary<Window, SubbedProperties> SubscribedWindows = new();
+	private readonly Dictionary<Window, SubbedProperties> _subscribedWindows = new();
+	private bool _permissionGranted;
 
-	internal static bool DiscretePopups { get; set; } = true;
+	// Explicit static constructor tells compiler not to mark type as beforefieldinit https://csharpindepth.com/Articles/BeforeFieldInit
+	// no more need? https://github.com/dotnet/runtime/issues/4346
+	//static PermissionsProcessor() { }
 
-	internal static void Request(Window window)
+	// Explicit private constructor prevents a new instance from being created anyplace else
+	private PermissionsProcessor() { }
+
+	internal event EventHandler<PermissionEventArgs> PermissionsChanged;
+
+	internal static PermissionsProcessor Instance { get; } = new();
+
+	internal bool DiscretePopups { get; set; } = true;
+
+	internal bool PermissionGranted
 	{
-		if (SubscribedWindows.TryAdd(window, new SubbedProperties(window, OnWindowResumedTimeout)))
+		get => _permissionGranted;
+		private set
+		{
+			if (_permissionGranted != value)
+			{
+				_permissionGranted = value;
+				PermissionsChanged?.Invoke(this, new PermissionEventArgs { PermissionGranted = _permissionGranted });
+			}
+		}
+	}
+
+	internal void Request(Window window)
+	{
+		if (_subscribedWindows.TryAdd(window, new SubbedProperties(window, OnWindowResumedTimeout)))
 		{
 			window.Resumed += OnWindowResumed;
 			window.Deactivated += OnWindowDeactivated;
@@ -25,15 +52,15 @@ internal static class PermissionsProcessor
 		OnWindowResumed(window);
 	}
 
-	internal static void Subscribe(Page page)
+	internal void Subscribe(Page page)
 	{
 		var window = page.Window;
-		if (SubscribedWindows.TryGetValue(window, out var windowProperties))
+		if (_subscribedWindows.TryGetValue(window, out var windowProperties))
 		{
 			if (!windowProperties.Pages.Contains(page))
 				windowProperties.Pages.Add(page);
 		}
-		else if (SubscribedWindows.TryAdd(window, new SubbedProperties(page, OnWindowResumedTimeout)))
+		else if (_subscribedWindows.TryAdd(window, new SubbedProperties(page, OnWindowResumedTimeout)))
 		{
 			window.Resumed += OnWindowResumed;
 			window.Deactivated += OnWindowDeactivated;
@@ -43,67 +70,67 @@ internal static class PermissionsProcessor
 		}
 	}
 
-	internal static void Unsubscribe(Page page)
+	internal void Unsubscribe(Page page)
 	{
-		if (SubscribedWindows.TryGetValue(page.Window, out var windowProperties))
+		if (_subscribedWindows.TryGetValue(page.Window, out var windowProperties))
 		{
 			windowProperties.Pages.Remove(page);
 			Unsubscribe(page.Window, windowProperties);
 		}
 	}
 
-	internal static async ValueTask UnsubscribeAsync(Page page)
+	internal async ValueTask UnsubscribeAsync(Page page)
 	{
-		if (SubscribedWindows.TryGetValue(page.Window, out var windowProperties))
+		if (_subscribedWindows.TryGetValue(page.Window, out var windowProperties))
 		{
 			windowProperties.Pages.Remove(page);
 			await UnsubscribeAsync(page.Window, windowProperties);
 		}
 	}
 
-	private static void OnWindowResumed(object window, EventArgs _ = null)
+	private void OnWindowResumed(object window, EventArgs _ = null)
 	{
 		SubbedProperties windowProperties;
 
 		if (DiscretePopups)
 		{
-			// resumed window has a subbed page, and all pages on RESUMED window not in progress
-			if (SubscribedWindows.TryGetValue((Window)window, out windowProperties) && !windowProperties.InProgress)
+			// popup if resumed window has a subbed page, and all pages on RESUMED window are not in progress
+			if (_subscribedWindows.TryGetValue((Window)window, out windowProperties) && !windowProperties.InProgress)
 				windowProperties.ResumedTimer.Change(TimeSpan.FromSeconds(.5), Timeout.InfiniteTimeSpan);
 		}
 		else
 		{
-			// resumed window has a subbed page, and all pages on ALL windows not in progress
-			if (SubscribedWindows.TryGetValue((Window)window, out windowProperties) && SubscribedWindows.Values.All(subscribedWindow => !subscribedWindow.InProgress))
+			// popup if resumed window has a subbed page, and all pages on ALL windows are not in progress
+			if (_subscribedWindows.TryGetValue((Window)window, out windowProperties) && _subscribedWindows.Values.All(subscribedWindow => !subscribedWindow.InProgress))
 				windowProperties.ResumedTimer.Change(TimeSpan.FromSeconds(.5), Timeout.InfiniteTimeSpan);
 		}
 	}
 
-	private static void OnWindowDeactivated(object window, EventArgs _)
+	private void OnWindowDeactivated(object window, EventArgs _)
 	{
-		if (SubscribedWindows.TryGetValue((Window)window, out var windowProperties))
+		if (_subscribedWindows.TryGetValue((Window)window, out var windowProperties))
 			windowProperties.ResumedTimer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
 	}
 
 	// ReSharper disable once MemberCanBePrivate.Global
-	internal static void OnWindowDestroying(object sender, EventArgs _ = null)
+	internal void OnWindowDestroying(object sender, EventArgs _ = null)
 	{
 		// ReSharper disable once JoinDeclarationAndInitializer
 		Window window;
-	#if ANDROID
-		window = SubscribedWindows.FirstOrDefault(pair => pair.Value.PlatformSpecificWindowIdentifier == sender).Key;
-	#else
+		#if ANDROID
+		window = _subscribedWindows.FirstOrDefault(pair => pair.Value.PlatformSpecificWindowIdentifier == sender).Key;
+		#else
 		window = (Window)sender;
-	#endif
+		#endif
 
-		if (window != null && SubscribedWindows.TryGetValue(window, out var windowProperties))
+		if (window != null && _subscribedWindows.TryGetValue(window, out var windowProperties))
 		{
 			windowProperties.Pages.Clear();
 			Unsubscribe(window, windowProperties);
 		}
 	}
 
-	private static void Unsubscribe(Window window, SubbedProperties windowProperties)
+	private void Unsubscribe(Window window, SubbedProperties windowProperties)
 	{
 		if (!windowProperties.Pages.Any())
 		{
@@ -111,7 +138,7 @@ internal static class PermissionsProcessor
 
 			windowProperties.ResumedTimer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
 			windowProperties.ResumedTimer.Dispose();
-			SubscribedWindows.Remove(window);
+			_subscribedWindows.Remove(window);
 			windowProperties.Cts.Cancel();
 			windowProperties.Cts.Dispose();
 
@@ -119,7 +146,7 @@ internal static class PermissionsProcessor
 		}
 	}
 
-	private static async ValueTask UnsubscribeAsync(Window window, SubbedProperties windowProperties)
+	private async ValueTask UnsubscribeAsync(Window window, SubbedProperties windowProperties)
 	{
 		if (!windowProperties.Pages.Any())
 		{
@@ -127,7 +154,7 @@ internal static class PermissionsProcessor
 
 			windowProperties.ResumedTimer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
 			await windowProperties.ResumedTimer.DisposeAsync();
-			SubscribedWindows.Remove(window);
+			_subscribedWindows.Remove(window);
 			windowProperties.Cts.Cancel();
 			windowProperties.Cts.Dispose();
 
@@ -135,9 +162,9 @@ internal static class PermissionsProcessor
 		}
 	}
 
-	private static async void OnWindowResumedTimeout(object window)
+	private async void OnWindowResumedTimeout(object window)
 	{
-		if (window is Window w && SubscribedWindows.TryGetValue(w, out var windowProperties) && w.Page != null)
+		if (window is Window w && _subscribedWindows.TryGetValue(w, out var windowProperties) && w.Page != null)
 		{
 			var page = w.Page switch
 			{
@@ -145,22 +172,23 @@ internal static class PermissionsProcessor
 				NavigationPage navigationPage when windowProperties.Pages.Contains(navigationPage.CurrentPage) => navigationPage.CurrentPage,
 				TabbedPage tabbedPage when windowProperties.Pages.Contains(tabbedPage.CurrentPage) => tabbedPage.CurrentPage,
 
+				// @formatter:off — disable formatter after this line
 				// cuz WinUI IsPresented is broken bug https://github.com/dotnet/maui/issues/11785
-			#if WINDOWS
+				#if WINDOWS
 				FlyoutPage { Flyout.IsFocused: true } flyoutPage when windowProperties.Pages.Contains(flyoutPage.Flyout) => flyoutPage.Flyout,
-				FlyoutPage { Detail.IsFocused: true } flyoutPage when windowProperties.Pages.Contains(flyoutPage.Detail) => flyoutPage.Detail,
-				// https://github.com/dotnet/maui/issues/13496#issuecomment-1718331707
+				FlyoutPage { Detail.IsFocused: true } flyoutPage when windowProperties.Pages.Contains(flyoutPage.Detail) => flyoutPage.Detail, // https://github.com/dotnet/maui/issues/13496#issuecomment-1718331707
 				FlyoutPage { Flyout.IsFocused: false, Detail.IsFocused: false } flyoutPage when windowProperties.Pages.Contains(flyoutPage.Detail) => flyoutPage.Detail,
-			#else
+				#else
 				FlyoutPage { IsPresented: true } flyoutPage when windowProperties.Pages.Contains(flyoutPage.Flyout) => flyoutPage.Flyout,
 				FlyoutPage { IsPresented: false } flyoutPage when windowProperties.Pages.Contains(flyoutPage.Detail) => flyoutPage.Detail,
-			#endif
+				#endif
+				// @formatter:on — enable formatter after this line
 				_ => null
 			};
 
 			if (page != null)
 			{
-				SubscribedWindows[w].InProgress = true; // in progress
+				_subscribedWindows[w].InProgress = true; // in progress
 
 				try
 				{
@@ -169,42 +197,46 @@ internal static class PermissionsProcessor
 						{
 							>= 12 => () => RequestPermissions<BluetoothPermissions>(page, windowProperties.Cts.Token),
 							> 9 => () => RequestPermissions<FineLocationPermissions>(page, windowProperties.Cts.Token),
-							_ => () => RequestPermissions<CoarseLocationPermissions>(page, windowProperties.Cts.Token),
+							_ => () => RequestPermissions<CoarseLocationPermissions>(page, windowProperties.Cts.Token)
 						}
 						: () => RequestPermissions<LocationPermissions>(page, windowProperties.Cts.Token));
 				}
-				catch (OperationCanceledException exception) when (exception.CancellationToken.IsCancellationRequested)
+				catch (OperationCanceledException exception)
 				{
 					Trace.WriteLine($"{w.Title}:{exception.Message}");
 				}
+				catch (PermissionException exception)
+				{
+					Trace.WriteLine(exception.Message);
+					var exit = await MainThread.InvokeOnMainThreadAsync(() => page.DisplayAlert("Critical Permission(s) Error", "Manifest missing permission definition(s)", "Exit", "Fail"));
+					if (exit)
+						Application.Current?.Quit();
+				}
 				finally
 				{
-					if (SubscribedWindows.TryGetValue(w, out var subscribedWindow) && subscribedWindow.Pages.Contains(page))
+					if (_subscribedWindows.TryGetValue(w, out var subscribedWindow) && subscribedWindow.Pages.Contains(page))
 						subscribedWindow.InProgress = false;
 				}
 			}
 		}
 	}
 
-	private static async Task RequestPermissions<T>(Page page, CancellationToken cancellationToken) where T : BasePlatformPermission, IPermissionPrompts, new()
+	private async Task RequestPermissions<T>(Page page, CancellationToken cancellationToken) where T : BasePlatformPermission, IPermissionPrompts, new()
 	{
 		var permissions = new T();
 
-		var status = await CheckStatusAsync<T>();
-		if (status != PermissionStatus.Granted)
+		permissions.EnsureDeclared();
+
+		PermissionGranted = await CheckStatusAsync<T>() == PermissionStatus.Granted;
+		if (!PermissionGranted)
 		{
 			if (ShouldShowRationale<T>())
-			{
-				Trace.WriteLine($"{page.Title} Permissions.Rational");
 				await permissions.DisplayRationalAlert(page);
-			}
 
-			status = await RequestAsync<T>();
-			if (status != PermissionStatus.Granted)
+			PermissionGranted = await RequestAsync<T>() == PermissionStatus.Granted;
+			if (!PermissionGranted)
 			{
-				Trace.WriteLine($"{page.Title} Permissions.Requesting");
-				var choice = await permissions.DisplaySettingsAlert(page).WaitAsync(cancellationToken);
-				if (choice)
+				if (await permissions.DisplaySettingsAlert(page).WaitAsync(cancellationToken))
 					AppInfo.Current.ShowSettingsUI();
 			}
 		}
@@ -241,4 +273,10 @@ internal static class PermissionsProcessor
 			#endif
 		}
 	}
+}
+
+
+public class PermissionEventArgs : EventArgs
+{
+	public bool PermissionGranted { get; set; }
 }

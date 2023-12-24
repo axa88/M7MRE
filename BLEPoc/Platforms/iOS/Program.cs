@@ -2,7 +2,7 @@
 
 
 // ReSharper disable once CheckNamespace
-namespace BLEPoc;
+namespace DataLayouts;
 
 public class Program
 {

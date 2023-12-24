@@ -1,4 +1,5 @@
-﻿namespace MauiAppWindowPageLifeCycleDiscrepancies;
+﻿using Microsoft.Maui.Devices;
+namespace MauiAppWindowPageLifeCycleDiscrepancies;
 
 internal class FlyoutCustom : FlyoutPage
 {

@@ -1,5 +1,5 @@
 ﻿// ReSharper disable once CheckNamespace
-namespace BLEPoc.Permissions;
+namespace BLEPoC.Permissions;
 
 internal partial class LocationPermissions
 {
@@ -12,9 +12,9 @@ internal partial class LocationPermissions
 
 	private string RationalTitle => $"{_granularity} Location permission required";
 	private string RationalMessage => $"Permission to use {_granularity} Location is required by Bluetooth on your version of Android";
-	private string RationalButtonText => "Continue";
+	private static string RationalButtonText => "Continue";
 	private string GoToSettingsTitle => $"{_granularity} Location Access Denied?";
 	private string GoToSettingsMessage => $"Go to Settings and enable \"{_granularity} Location\" to use this App";
-	private string GoToSettingsAcceptText => "Go";
-	private string GoToSettingsCancelText => "Exit";
+	private static string GoToSettingsAcceptText => "Go";
+	private static string GoToSettingsCancelText => "Exit";
 }

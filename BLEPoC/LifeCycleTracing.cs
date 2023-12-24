@@ -2,15 +2,16 @@
 using System.Diagnostics;
 
 using Microsoft.Maui.LifecycleEvents;
+using Microsoft.Maui.Devices;
 
 
-namespace BLEPoc;
+namespace BLEPoC;
 
-public class PageTrace
+public class LifeCycleTracing
 {
 	private static readonly object _lock = new();
 
-	public PageTrace(Page page, string id = null)
+	public LifeCycleTracing(Page page, string id = null)
 	{
 		page.Title = string.IsNullOrWhiteSpace(id) ? page.GetType().ToString() : id;
 		Trace.WriteLine($"{page.Title}.ctor");
@@ -19,12 +20,11 @@ public class PageTrace
 		page.Disappearing += (_, __) => TraceIt(page.Title, nameof(page.Disappearing));
 		page.Focused += (_, focusEventArgs) => TraceIt(page.Title, nameof(page.Focused), focusEventArgs);
 		page.Unfocused += (_, focusEventArgs) => TraceIt(page.Title, nameof(page.Unfocused), focusEventArgs);
-		page.FocusChangeRequested += (_, focusRequestArgs) => TraceIt(page.Title, nameof(page.FocusChangeRequested), focusRequestArgs);
 		page.Loaded += (_, __) => TraceIt(page.Title, nameof(page.Loaded));
 		page.Unloaded += (_, __) => TraceIt(page.Title, nameof(page.Unloaded));
 	}
 
-	public PageTrace(Window window, string id = null)
+	public LifeCycleTracing(Window window, string id = null)
 	{
 		window.Title = string.IsNullOrWhiteSpace(id) ? nameof(CustomWindow) : id;
 		Trace.WriteLine($"{window.Title}.ctor");
@@ -37,7 +37,7 @@ public class PageTrace
 		window.Destroying += (_, __) => TraceIt(window.Title, nameof(window.Destroying));
 	}
 
-	public PageTrace(Application application, string id = null)
+	public LifeCycleTracing(Application application, string id = null)
 	{
 		var idd = string.IsNullOrWhiteSpace(id) ? application.GetType().ToString() : id;
 		Trace.WriteLine($"{idd}.ctor");
@@ -45,7 +45,7 @@ public class PageTrace
 		application.PageDisappearing += (_, page) => TraceIt(idd, $"{nameof(application.PageDisappearing)}:{page.Title}");
 	}
 
-	public PageTrace(MauiAppBuilder builder, string id = null)
+	public LifeCycleTracing(MauiAppBuilder builder, string id = null)
 	{
 		builder.ConfigureLifecycleEvents(events =>
 		{

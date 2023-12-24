@@ -3,7 +3,7 @@ using Android.Runtime;
 
 
 // ReSharper disable once CheckNamespace
-namespace BLEPoc;
+namespace BLEPoC;
 
 [Application]
 public class MainApplication : MauiApplication

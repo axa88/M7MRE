@@ -1,5 +1,5 @@
 ﻿// ReSharper disable once CheckNamespace
-namespace BLEPoc.Permissions;
+namespace BLEPoC.Permissions;
 
 internal partial class LocationPermissions
 {

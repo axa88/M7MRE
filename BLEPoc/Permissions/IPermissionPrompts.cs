@@ -1,4 +1,4 @@
-﻿namespace BLEPoc.Permissions;
+﻿namespace BLEPoC.Permissions;
 
 internal interface IPermissionPrompts
 {

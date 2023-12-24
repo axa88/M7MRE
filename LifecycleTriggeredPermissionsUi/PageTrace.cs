@@ -19,7 +19,6 @@ public class PageTrace
 		page.Disappearing += (_, __) => TraceIt(page.Title, nameof(page.Disappearing));
 		page.Focused += (_, focusEventArgs) => TraceIt(page.Title, nameof(page.Focused), focusEventArgs);
 		page.Unfocused += (_, focusEventArgs) => TraceIt(page.Title, nameof(page.Unfocused), focusEventArgs);
-		page.FocusChangeRequested += (_, focusRequestArgs) => TraceIt(page.Title, nameof(page.FocusChangeRequested), focusRequestArgs);
 		page.Loaded += (_, __) => TraceIt(page.Title, nameof(page.Loaded));
 		page.Unloaded += (_, __) => TraceIt(page.Title, nameof(page.Unloaded));
 	}

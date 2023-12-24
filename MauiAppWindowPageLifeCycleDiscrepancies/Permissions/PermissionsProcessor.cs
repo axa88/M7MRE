@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 
 using static Microsoft.Maui.ApplicationModel.Permissions;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Devices;
 
 
 namespace MauiAppWindowPageLifeCycleDiscrepancies.Permissions;

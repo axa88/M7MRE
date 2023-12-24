@@ -9,6 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayouts", "DataLayouts\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LifecycleTriggeredPermissionsUi", "LifecycleTriggeredPermissionsUi\LifecycleTriggeredPermissionsUi.csproj", "{106392C3-43E2-475B-A009-3148AC145C8E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BLEPoC", "BLEPoC\BLEPoC.csproj", "{2F86278E-C8B7-4A61-AB50-6C4FBE69AE00}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3875145B-75B0-44CC-8328-8EEB95DB5899}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +38,12 @@ Global
 		{106392C3-43E2-475B-A009-3148AC145C8E}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{106392C3-43E2-475B-A009-3148AC145C8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{106392C3-43E2-475B-A009-3148AC145C8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F86278E-C8B7-4A61-AB50-6C4FBE69AE00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F86278E-C8B7-4A61-AB50-6C4FBE69AE00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F86278E-C8B7-4A61-AB50-6C4FBE69AE00}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{2F86278E-C8B7-4A61-AB50-6C4FBE69AE00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F86278E-C8B7-4A61-AB50-6C4FBE69AE00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F86278E-C8B7-4A61-AB50-6C4FBE69AE00}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

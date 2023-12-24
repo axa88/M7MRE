@@ -1,4 +1,4 @@
-﻿namespace BLEPoc;
+﻿namespace BLEPoC.Ui.Pages;
 
 public partial class MainPage : PermissionsEnabledContentPage
 {
@@ -8,7 +8,7 @@ public partial class MainPage : PermissionsEnabledContentPage
 	public MainPage(Page secondPage, bool checkPermissionsOnStart, bool checkPermissionsOnResumed, string title = "") : base(checkPermissionsOnStart, checkPermissionsOnResumed)
 	{
 		_secondPage = secondPage;
-		new PageTrace(this, title);
+		new LifeCycleTracing(this, title);
 		InitializeComponent();
 	}
 

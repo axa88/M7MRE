@@ -1,14 +1,15 @@
 ﻿using System.Diagnostics;
 
+using BLEPoC.Ble;
 
-namespace BLEPoc;
+namespace BLEPoC;
 
 public partial class App : Application
 {
 	public App()
 	{
 		InitializeComponent();
-		_ = new PageTrace(this, nameof(App));
+		_ = new LifeCycleTracing(this, nameof(App));
 
 		//MainPage = new MainPage { Title = "#0" }; // ContentPage
 		//MainPage = new NavigationPage(new MainPage { Title = "#0" }); // NavigationPage

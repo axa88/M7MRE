@@ -2,7 +2,7 @@
 
 
 // ReSharper disable once CheckNamespace
-namespace BLEPoc;
+namespace BLEPoC;
 
 public class Program
 {
