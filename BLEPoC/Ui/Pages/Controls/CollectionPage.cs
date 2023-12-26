@@ -6,6 +6,9 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 
+using BLEPoC.Ui.Models;
+using BLEPoC.Ui.Models.DisplayItems;
+
 using Microsoft.Maui.Controls.Shapes;
 
 using static Microsoft.Maui.Controls.VisualStateManager;
@@ -15,11 +18,11 @@ using Switch = Microsoft.Maui.Controls.Switch;
 using TimePicker = Microsoft.Maui.Controls.TimePicker;
 
 
-namespace BLEPoC.Ui.Controls;
+namespace BLEPoC.Ui.Pages.Controls;
 
 internal class CollectionPage : ContentPage
 {
-	public CollectionPage(object bindingContextViewModel)
+	internal CollectionPage(CollectionBaseModel bindingContextViewModel)
 	{
 		Content = new Grid { Margin = 20, Children = { new CollectionViewCustom() } };
 		BindingContext = bindingContextViewModel;
@@ -48,10 +51,10 @@ internal class CollectionPage : ContentPage
 
 internal class CollectionViewCustom : CollectionView
 {
-	public CollectionViewCustom()
+	internal CollectionViewCustom()
 	{
 		ItemTemplate = new DisplayItemDataTemplateSelector();
-		SetBinding(ItemsSourceProperty, new Binding(nameof(ControlCollectionViewModel.Items)));
+		SetBinding(ItemsSourceProperty, new Binding(nameof(CollectionBaseModel.Items)));
 
 		ItemsLayout = new LinearItemsLayout(ItemsLayoutOrientation.Vertical) { ItemSpacing = 2 };
 		VerticalScrollBarVisibility = ScrollBarVisibility.Always;
@@ -62,7 +65,7 @@ internal class CollectionViewCustom : CollectionView
 }
 
 
-public class DisplayItemDataTemplateSelector : DataTemplateSelector
+internal class DisplayItemDataTemplateSelector : DataTemplateSelector
 {
 	private DisplayItemTemplateFolder DisplayItemTemplateFolder { get; } = new();
 	private DisplayItemTemplateBinary DisplayItemTemplateBinary { get; } = new();
@@ -75,21 +78,21 @@ public class DisplayItemDataTemplateSelector : DataTemplateSelector
 	{
 		return item switch
 		{
-			DisplayItemFolder _ => DisplayItemTemplateFolder,
-			DisplayItemBinary _ => DisplayItemTemplateBinary,
-			DisplayItemMulti _ => DisplayItemTemplateMulti,
-			DisplayItemTime _ => DisplayItemTemplateTime,
-			DisplayItemDigits _ => DisplayItemTemplateDigits,
-			DisplayItemEntry _ => DisplayItemTemplateEntry,
+			Summary _ => DisplayItemTemplateFolder,
+			BinaryIo _ => DisplayItemTemplateBinary,
+			MultiIo _ => DisplayItemTemplateMulti,
+			TimeIo _ => DisplayItemTemplateTime,
+			DigitIo _ => DisplayItemTemplateDigits,
+			TextIo _ => DisplayItemTemplateEntry,
 			_ => throw new NotImplementedException(nameof(DisplayItemDataTemplateSelector))
 		};
 	}
 }
 
 
-public class DisplayItemTemplateFolder : DataTemplate
+internal class DisplayItemTemplateFolder : DataTemplate
 {
-	public DisplayItemTemplateFolder()
+	internal DisplayItemTemplateFolder()
 	{
 		LoadTemplate = () =>
 		{
@@ -103,14 +106,14 @@ public class DisplayItemTemplateFolder : DataTemplate
 }
 
 
-public class DisplayItemTemplateBinary : DataTemplate
+internal class DisplayItemTemplateBinary : DataTemplate
 {
-	public DisplayItemTemplateBinary()
+	internal DisplayItemTemplateBinary()
 	{
 		LoadTemplate = () =>
 		{
 			Switch @switch = new() { Margin = new Thickness(10), HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Center };
-			@switch.SetBinding(Switch.IsToggledProperty, nameof(DisplayItemBinary.IsOn), BindingMode.TwoWay);
+			@switch.SetBinding(Switch.IsToggledProperty, nameof(BinaryIo.IsOn), BindingMode.TwoWay);
 
 			HorizontalStackLayout horizontalStackLayout = new() { Children = { new BaseLayout(), @switch } };
 
@@ -120,16 +123,16 @@ public class DisplayItemTemplateBinary : DataTemplate
 }
 
 
-public class DisplayItemTemplateMulti : DataTemplate
+internal class DisplayItemTemplateMulti : DataTemplate
 {
-	public DisplayItemTemplateMulti()
+	internal DisplayItemTemplateMulti()
 	{
 		LoadTemplate = () =>
 		{
 			Picker picker = new() { Margin = new Thickness(10), Title = "Picker Title" };
-			picker.SetBinding(Picker.ItemsSourceProperty, nameof(DisplayItemMulti.AvailableItems)); // items available for selection
+			picker.SetBinding(Picker.ItemsSourceProperty, nameof(MultiIo.AvailableItems)); // items available for selection
 			picker.ItemDisplayBinding = new Binding(nameof(IDisplayItem.Primary)); // display selected
-			picker.SetBinding(Picker.SelectedItemProperty, nameof(DisplayItemMulti.SelectedItem)); // act upon and store when selected changes
+			picker.SetBinding(Picker.SelectedItemProperty, nameof(MultiIo.SelectedItem)); // act upon and store when selected changes
 
 			VerticalStackLayout horizontalStackLayoutOuter = new() { Children = { new BaseLayout(), picker } };
 
@@ -139,9 +142,9 @@ public class DisplayItemTemplateMulti : DataTemplate
 }
 
 
-public class DisplayItemTemplateTime : DataTemplate
+internal class DisplayItemTemplateTime : DataTemplate
 {
-	public DisplayItemTemplateTime()
+	internal DisplayItemTemplateTime()
 	{
 		LoadTemplate = () =>
 		{
@@ -151,7 +154,7 @@ public class DisplayItemTemplateTime : DataTemplate
 			TimePicker picker = new() { Format = "H" };
 #endif
 
-			picker.SetBinding(TimePicker.TimeProperty, nameof(DisplayItemTime.Time), BindingMode.TwoWay);
+			picker.SetBinding(TimePicker.TimeProperty, nameof(TimeIo.Time), BindingMode.TwoWay);
 
 			VerticalStackLayout horizontalStackLayoutOuter = new() { Children = { new BaseLayout(), picker } };
 			return new OuterBorder(horizontalStackLayoutOuter);
@@ -160,9 +163,9 @@ public class DisplayItemTemplateTime : DataTemplate
 }
 
 
-public class DisplayItemTemplateDigits : DataTemplate
+internal class DisplayItemTemplateDigits : DataTemplate
 {
-	public DisplayItemTemplateDigits()
+	internal DisplayItemTemplateDigits()
 	{
 		LoadTemplate = () =>
 		{
@@ -173,12 +176,12 @@ public class DisplayItemTemplateDigits : DataTemplate
 			Picker picker4 = new() { HorizontalTextAlignment = TextAlignment.Center };
 			Picker picker5 = new() { HorizontalTextAlignment = TextAlignment.Center };
 
-			picker0.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DisplayItemDigits.AvailableDigits)}[0]");
-			picker1.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DisplayItemDigits.AvailableDigits)}[1]");
-			picker2.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DisplayItemDigits.AvailableDigits)}[2]");
-			picker3.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DisplayItemDigits.AvailableDigits)}[3]");
-			picker4.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DisplayItemDigits.AvailableDigits)}[4]");
-			picker5.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DisplayItemDigits.AvailableDigits)}[5]");
+			picker0.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DigitIo.AvailableDigits)}[0]");
+			picker1.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DigitIo.AvailableDigits)}[1]");
+			picker2.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DigitIo.AvailableDigits)}[2]");
+			picker3.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DigitIo.AvailableDigits)}[3]");
+			picker4.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DigitIo.AvailableDigits)}[4]");
+			picker5.SetBinding(Picker.ItemsSourceProperty, $"{nameof(DigitIo.AvailableDigits)}[5]");
 
 			picker0.ItemDisplayBinding = new Binding(nameof(IDigit.DisplayValue));
 			picker1.ItemDisplayBinding = new Binding(nameof(IDigit.DisplayValue));
@@ -188,24 +191,24 @@ public class DisplayItemTemplateDigits : DataTemplate
 			picker5.ItemDisplayBinding = new Binding(nameof(IDigit.DisplayValue));
 
 			DigitMultiValueConverter<IDigit> digitMuVaCo = new();
-			picker0.SetBinding(Picker.SelectedItemProperty, new MultiBinding { Converter = digitMuVaCo, Mode = BindingMode.TwoWay, Bindings = new Collection<BindingBase> { new Binding($"{nameof(DisplayItemDigits.SelectedDigits)}[0]"), new Binding(nameof(DisplayItemDigits.SelectedDigitChange), BindingMode.OneWayToSource) } });
-			picker1.SetBinding(Picker.SelectedItemProperty, new MultiBinding { Converter = digitMuVaCo, Mode = BindingMode.TwoWay, Bindings = new Collection<BindingBase> { new Binding($"{nameof(DisplayItemDigits.SelectedDigits)}[1]"), new Binding(nameof(DisplayItemDigits.SelectedDigitChange), BindingMode.OneWayToSource) } });
-			picker2.SetBinding(Picker.SelectedItemProperty, new MultiBinding { Converter = digitMuVaCo, Mode = BindingMode.TwoWay, Bindings = new Collection<BindingBase> { new Binding($"{nameof(DisplayItemDigits.SelectedDigits)}[2]"), new Binding(nameof(DisplayItemDigits.SelectedDigitChange), BindingMode.OneWayToSource) } });
-			picker3.SetBinding(Picker.SelectedItemProperty, new MultiBinding { Converter = digitMuVaCo, Mode = BindingMode.TwoWay, Bindings = new Collection<BindingBase> { new Binding($"{nameof(DisplayItemDigits.SelectedDigits)}[3]"), new Binding(nameof(DisplayItemDigits.SelectedDigitChange), BindingMode.OneWayToSource) } });
-			picker4.SetBinding(Picker.SelectedItemProperty, new MultiBinding { Converter = digitMuVaCo, Mode = BindingMode.TwoWay, Bindings = new Collection<BindingBase> { new Binding($"{nameof(DisplayItemDigits.SelectedDigits)}[4]"), new Binding(nameof(DisplayItemDigits.SelectedDigitChange), BindingMode.OneWayToSource) } });
-			picker5.SetBinding(Picker.SelectedItemProperty, new MultiBinding { Converter = digitMuVaCo, Mode = BindingMode.TwoWay, Bindings = new Collection<BindingBase> { new Binding($"{nameof(DisplayItemDigits.SelectedDigits)}[5]"), new Binding(nameof(DisplayItemDigits.SelectedDigitChange), BindingMode.OneWayToSource) } });
+			picker0.SetBinding(Picker.SelectedItemProperty, new MultiBinding { Converter = digitMuVaCo, Mode = BindingMode.TwoWay, Bindings = new Collection<BindingBase> { new Binding($"{nameof(DigitIo.SelectedDigits)}[0]"), new Binding(nameof(DigitIo.SelectedDigitChange), BindingMode.OneWayToSource) } });
+			picker1.SetBinding(Picker.SelectedItemProperty, new MultiBinding { Converter = digitMuVaCo, Mode = BindingMode.TwoWay, Bindings = new Collection<BindingBase> { new Binding($"{nameof(DigitIo.SelectedDigits)}[1]"), new Binding(nameof(DigitIo.SelectedDigitChange), BindingMode.OneWayToSource) } });
+			picker2.SetBinding(Picker.SelectedItemProperty, new MultiBinding { Converter = digitMuVaCo, Mode = BindingMode.TwoWay, Bindings = new Collection<BindingBase> { new Binding($"{nameof(DigitIo.SelectedDigits)}[2]"), new Binding(nameof(DigitIo.SelectedDigitChange), BindingMode.OneWayToSource) } });
+			picker3.SetBinding(Picker.SelectedItemProperty, new MultiBinding { Converter = digitMuVaCo, Mode = BindingMode.TwoWay, Bindings = new Collection<BindingBase> { new Binding($"{nameof(DigitIo.SelectedDigits)}[3]"), new Binding(nameof(DigitIo.SelectedDigitChange), BindingMode.OneWayToSource) } });
+			picker4.SetBinding(Picker.SelectedItemProperty, new MultiBinding { Converter = digitMuVaCo, Mode = BindingMode.TwoWay, Bindings = new Collection<BindingBase> { new Binding($"{nameof(DigitIo.SelectedDigits)}[4]"), new Binding(nameof(DigitIo.SelectedDigitChange), BindingMode.OneWayToSource) } });
+			picker5.SetBinding(Picker.SelectedItemProperty, new MultiBinding { Converter = digitMuVaCo, Mode = BindingMode.TwoWay, Bindings = new Collection<BindingBase> { new Binding($"{nameof(DigitIo.SelectedDigits)}[5]"), new Binding(nameof(DigitIo.SelectedDigitChange), BindingMode.OneWayToSource) } });
 
-			picker0.SetBinding(Picker.IsVisibleProperty, $"{nameof(DisplayItemDigits.IsVisible)}[0]");
-			picker1.SetBinding(Picker.IsVisibleProperty, $"{nameof(DisplayItemDigits.IsVisible)}[1]");
-			picker2.SetBinding(Picker.IsVisibleProperty, $"{nameof(DisplayItemDigits.IsVisible)}[2]");
-			picker3.SetBinding(Picker.IsVisibleProperty, $"{nameof(DisplayItemDigits.IsVisible)}[3]");
-			picker4.SetBinding(Picker.IsVisibleProperty, $"{nameof(DisplayItemDigits.IsVisible)}[4]");
-			picker5.SetBinding(Picker.IsVisibleProperty, $"{nameof(DisplayItemDigits.IsVisible)}[5]");
+			picker0.SetBinding(Picker.IsVisibleProperty, $"{nameof(DigitIo.IsVisible)}[0]");
+			picker1.SetBinding(Picker.IsVisibleProperty, $"{nameof(DigitIo.IsVisible)}[1]");
+			picker2.SetBinding(Picker.IsVisibleProperty, $"{nameof(DigitIo.IsVisible)}[2]");
+			picker3.SetBinding(Picker.IsVisibleProperty, $"{nameof(DigitIo.IsVisible)}[3]");
+			picker4.SetBinding(Picker.IsVisibleProperty, $"{nameof(DigitIo.IsVisible)}[4]");
+			picker5.SetBinding(Picker.IsVisibleProperty, $"{nameof(DigitIo.IsVisible)}[5]");
 
 			HorizontalStackLayout pickerLayout = new() {Children = { picker5, picker4, picker3, picker2, picker1, picker0 } };
 
 			Button submitButton = new() { Text = "Submit" };
-			submitButton.SetBinding(Button.CommandProperty, nameof(DisplayItemDigits.SubmitCommand));
+			submitButton.SetBinding(Button.CommandProperty, nameof(DigitIo.SubmitCommand));
 
 			VerticalStackLayout verticalStackLayout = new() { Children = { new BaseLayout(), pickerLayout, /*submitButton*/ } };
 			return new OuterBorder(verticalStackLayout);
@@ -214,20 +217,20 @@ public class DisplayItemTemplateDigits : DataTemplate
 }
 
 
-public class DisplayItemTemplateEntry : DataTemplate
+internal class DisplayItemTemplateEntry : DataTemplate
 {
-	public DisplayItemTemplateEntry()
+	internal DisplayItemTemplateEntry()
 	{
 		LoadTemplate = () =>
 		{
 			Entry entry = new() { ClearButtonVisibility = ClearButtonVisibility.WhileEditing, ReturnType = ReturnType.Send };
-			entry.SetBinding(Entry.TextProperty, nameof(DisplayItemEntry.Text));
-			entry.SetBinding(Entry.TextColorProperty, nameof(DisplayItemEntry.TextColor));
-			entry.SetBinding(Entry.PlaceholderProperty, nameof(DisplayItemEntry.TextPlaceHolder));
-			entry.SetBinding(Entry.MaxLengthProperty, nameof(DisplayItemEntry.MaxLength));
-			entry.SetBinding(Entry.KeyboardProperty, nameof(DisplayItemEntry.Keyboard));
-			entry.SetBinding(Entry.ReturnCommandProperty, nameof(DisplayItemEntry.SubmitCommand));
-			entry.SetBinding(Entry.ReturnCommandParameterProperty, nameof(DisplayItemEntry.Text));
+			entry.SetBinding(Entry.TextProperty, nameof(TextIo.Text));
+			entry.SetBinding(Entry.TextColorProperty, nameof(TextIo.TextColor));
+			entry.SetBinding(Entry.PlaceholderProperty, nameof(TextIo.TextPlaceHolder));
+			entry.SetBinding(Entry.MaxLengthProperty, nameof(TextIo.MaxLength));
+			entry.SetBinding(Entry.KeyboardProperty, nameof(TextIo.Keyboard));
+			entry.SetBinding(Entry.ReturnCommandProperty, nameof(TextIo.SubmitCommand));
+			entry.SetBinding(Entry.ReturnCommandParameterProperty, nameof(TextIo.Text));
 
 			VerticalStackLayout verticalStackLayout = new() { Children = { new BaseLayout(), entry } };
 			return new OuterBorder(verticalStackLayout);
@@ -236,9 +239,9 @@ public class DisplayItemTemplateEntry : DataTemplate
 }
 
 
-public class BaseLayout : VerticalStackLayout
+internal class BaseLayout : VerticalStackLayout
 {
-	public BaseLayout()
+	internal BaseLayout()
 	{
 		Label primaryLabel = new() { Margin = new Thickness(10), FontAttributes = FontAttributes.Bold, VerticalOptions = LayoutOptions.Center };
 		primaryLabel.SetBinding(Label.TextProperty, nameof(IDisplayItem.Primary));
@@ -252,9 +255,9 @@ public class BaseLayout : VerticalStackLayout
 }
 
 
-public class OuterBorder : Border
+internal class OuterBorder : Border
 {
-	public OuterBorder(View content)
+	internal OuterBorder(View content)
 	{
 		BackgroundColor = Colors.Transparent;
 		Padding = new Thickness(10);
@@ -266,7 +269,7 @@ public class OuterBorder : Border
 }
 
 
-public class DigitMultiValueConverter<T> : IMultiValueConverter
+internal class DigitMultiValueConverter<T> : IMultiValueConverter
 {
 	// source: IDigit SelectedDigit, object SelectedDigitChange <> target: object SelectedItem
 

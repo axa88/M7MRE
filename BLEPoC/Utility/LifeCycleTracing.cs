@@ -2,16 +2,15 @@
 using System.Diagnostics;
 
 using Microsoft.Maui.LifecycleEvents;
-using Microsoft.Maui.Devices;
 
 
-namespace BLEPoC;
+namespace BLEPoC.Utility;
 
-public class LifeCycleTracing
+internal class LifeCycleTracing
 {
 	private static readonly object _lock = new();
 
-	public LifeCycleTracing(Page page, string id = null)
+	internal LifeCycleTracing(Page page, string id = null)
 	{
 		page.Title = string.IsNullOrWhiteSpace(id) ? page.GetType().ToString() : id;
 		Trace.WriteLine($"{page.Title}.ctor");
@@ -24,7 +23,7 @@ public class LifeCycleTracing
 		page.Unloaded += (_, __) => TraceIt(page.Title, nameof(page.Unloaded));
 	}
 
-	public LifeCycleTracing(Window window, string id = null)
+	internal LifeCycleTracing(Window window, string id = null)
 	{
 		window.Title = string.IsNullOrWhiteSpace(id) ? nameof(CustomWindow) : id;
 		Trace.WriteLine($"{window.Title}.ctor");
@@ -37,7 +36,7 @@ public class LifeCycleTracing
 		window.Destroying += (_, __) => TraceIt(window.Title, nameof(window.Destroying));
 	}
 
-	public LifeCycleTracing(Application application, string id = null)
+	internal LifeCycleTracing(Application application, string id = null)
 	{
 		var idd = string.IsNullOrWhiteSpace(id) ? application.GetType().ToString() : id;
 		Trace.WriteLine($"{idd}.ctor");
@@ -45,7 +44,7 @@ public class LifeCycleTracing
 		application.PageDisappearing += (_, page) => TraceIt(idd, $"{nameof(application.PageDisappearing)}:{page.Title}");
 	}
 
-	public LifeCycleTracing(MauiAppBuilder builder, string id = null)
+	internal LifeCycleTracing(MauiAppBuilder builder, string id = null)
 	{
 		builder.ConfigureLifecycleEvents(events =>
 		{

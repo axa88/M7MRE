@@ -1,4 +1,8 @@
-﻿namespace BLEPoC.Ui.Pages;
+﻿using BLEPoC.Ui.Pages.Permissions;
+using BLEPoC.Utility;
+
+
+namespace BLEPoC.Ui.Pages.Basic;
 
 public partial class MainPage : PermissionsEnabledContentPage
 {

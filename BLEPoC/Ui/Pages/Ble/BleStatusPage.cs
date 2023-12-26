@@ -1,15 +1,19 @@
-﻿using BLEPoC.Ui.Controls;
+﻿using BLEPoC.Ui.Pages.Controls;
+using BLEPoC.Ui.Pages.Permissions;
+using BLEPoC.Ui.ViewModels.Ble;
+using BLEPoC.Ui.ViewModels.Controls;
+using BLEPoC.Utility;
 
 using Microsoft.Maui.Controls.Shapes;
 
 
-namespace BLEPoC.Ble;
+namespace BLEPoC.Ui.Pages.Ble;
 
 internal class BleStatusPage : PermissionsEnabledContentPage
 {
 	internal BleStatusPage() : base(true, true)
 	{
-		var bleVm = new BleViewModel();
+		var bleVm = new BleStatusViewModel();
 		BindingContext = bleVm;
 
 		Label isAvailableLabel = new() { Text = nameof(bleVm.BleIsAvailable) };
@@ -35,13 +39,16 @@ internal class BleStatusPage : PermissionsEnabledContentPage
 		supportsExtendedAdvertisingLabel.SetBinding(Label.TextProperty, nameof(bleVm.BleSupportsExtendedAdvertising));
 		var supportsExtendedAdvertisingBorder = new OuterBorder(supportsExtendedAdvertisingLabel);
 
+		Button testCollectionButton = new() { Text = "test Devices" };
+		testCollectionButton.Clicked += (_, __) => Application.Current?.OpenWindow(new CustomWindow(new CollectionPage(new TestDevicesViewModel())));
+
 		Button bondedDeviceButton = new() { Text = "Bonded Devices" };
 		bondedDeviceButton.Clicked += (_, __) => Application.Current?.OpenWindow(new CustomWindow(new CollectionPage(new BondedDevicesViewModel())));
 
 		Button connectedDeviceButton = new() { Text = "Connected Devices" };
 		connectedDeviceButton.Clicked += (_, __) => Application.Current?.OpenWindow(new CustomWindow(new CollectionPage(new ConnectedDevicesViewModel())));
 
-		var verticalStack = new VerticalStackLayout { Children = { isAvailableBorder , isOnBorder, stateBorder, supportsCodedPhyBorder, supportsExtendedAdvertisingBorder, bondedDeviceButton, connectedDeviceButton } };
+		var verticalStack = new VerticalStackLayout { Children = { isAvailableBorder , isOnBorder, stateBorder, supportsCodedPhyBorder, supportsExtendedAdvertisingBorder, bondedDeviceButton, connectedDeviceButton, testCollectionButton } };
 		//var outerBorder = new OuterBorder(verticalStack);
 
 		Content = verticalStack;

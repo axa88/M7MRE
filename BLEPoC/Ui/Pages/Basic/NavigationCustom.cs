@@ -1,11 +1,13 @@
 ﻿using System.Diagnostics;
 
+using BLEPoC.Utility;
 
-namespace BLEPoC.Ui.Pages;
+
+namespace BLEPoC.Ui.Pages.Basic;
 
 internal class NavigationCustom : NavigationPage
 {
-	public NavigationCustom(string title = null) : base(new MainPage(new SecondPage(true, true, "NPage #2"), true, true, "NPage #0"))
+	internal NavigationCustom(string title = null) : base(new MainPage(new SecondPage(true, true, "NPage #2"), true, true, "NPage #0"))
 	{
 		new LifeCycleTracing(this, title);
 		Pushed += (_, navigationEventArgs) => Trace.WriteLine($"{Title}:{nameof(Pushed)}:{navigationEventArgs.Page.Title}");

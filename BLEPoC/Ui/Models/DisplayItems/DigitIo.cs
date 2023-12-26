@@ -3,95 +3,19 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
 
-namespace BLEPoC.Ui.Controls;
+namespace BLEPoC.Ui.Models.DisplayItems;
 
-public interface IDisplayItem
-{
-	public string Primary { get; set; }
-	public string Secondary { get; set; }
-	public Command<object> ItemCommand { get; set; }
-}
-
-
-public class DisplayItemBase : IDisplayItem
-{
-	public string Primary { get; set; }
-	public string Secondary { get; set; }
-	public Command<object> ItemCommand { get; set; }
-}
-
-
-public class DisplayItemFolder : DisplayItemBase { }
-
-
-public class DisplayItemBinary : DisplayItemBase
-{
-	private bool _isOn;
-
-	public bool IsOn
-	{
-		get => _isOn;
-		set
-		{
-			_isOn = value;
-			ItemCommand?.Execute(_isOn);
-		}
-	}
-}
-
-
-public class DisplayItemMulti : DisplayItemBase
-{
-	private IDisplayItem _selectedItem;
-
-	public DisplayItemMulti(IList<IDisplayItem> listItems)
-	{
-		if (listItems == null || !listItems.Any())
-			throw new ArgumentNullException(nameof(listItems));
-
-		AvailableItems = listItems;
-	}
-	public IList<IDisplayItem> AvailableItems { get; set; }
-
-	public IDisplayItem SelectedItem
-	{
-		get => _selectedItem;
-		set
-		{
-			_selectedItem = value;
-			ItemCommand?.Execute(_selectedItem.Primary);
-		}
-	}
-}
-
-
-public class DisplayItemTime : DisplayItemBase
-{
-	private TimeSpan _time;
-
-	public TimeSpan Time
-	{
-		get => _time;
-		set
-		{
-			_time = value;
-			ItemCommand.Execute(_time);
-		}
-	}
-}
-
-
-public class DisplayItemDigits : DisplayItemBase, INotifyPropertyChanged
+internal class DigitIo : DisplayItem, INotifyPropertyChanged
 {
 	private const int _maxDigits = 6;
 	private readonly int _base;
 	private readonly string _digitFormat;
 	private readonly int _displayedDigits;
 
-	public DisplayItemDigits(int count, string @base)
+	internal DigitIo(int count, string @base)
 	{
 		if (count > _maxDigits)
-			throw new ArgumentOutOfRangeException(nameof(DisplayItemDigits), "too many digits to display");
+			throw new ArgumentOutOfRangeException(nameof(DigitIo), "too many digits to display");
 
 		_digitFormat = @base;
 		_base = string.Equals(@base, "B", StringComparison.OrdinalIgnoreCase) ? 2 : string.Equals(@base, "X", StringComparison.OrdinalIgnoreCase) ? 16 : 10;
@@ -107,7 +31,7 @@ public class DisplayItemDigits : DisplayItemBase, INotifyPropertyChanged
 
 		SubmitCommand = new Command(() => ItemCommand.Execute(Value), () => SelectedDigits.Take(_displayedDigits).All(digit => digit != null));
 
-		// force change notification cuz change of array elements do not trigger property change notification. Therefore notification is possibly only sent on initial creation
+		// force change notification cuz change of array elements do not trigger property change notification. Therefore, notification is possibly only sent on initial creation
 		OnPropertyChanged(nameof(AvailableDigits));
 	}
 
@@ -118,10 +42,10 @@ public class DisplayItemDigits : DisplayItemBase, INotifyPropertyChanged
 	/// Little Endian from right to left 0 = LSB, n = MSB </param>
 	/// <param name="base">set 2 for binary, 16 for hex, default base 10</param>
 	/// <exception cref="ArgumentNullException"></exception>
-	public DisplayItemDigits(IReadOnlyList<IReadOnlyCollection<int>> digits, string @base = "D")
+	internal DigitIo(IReadOnlyList<IReadOnlyCollection<int>> digits, string @base = "D")
 	{
 		if (digits == null || !digits.Any())
-			throw new ArgumentNullException(nameof(DisplayItemDigits), $"custom digit needs a collection of numbers");
+			throw new ArgumentNullException(nameof(digits), $"custom digit needs a collection of numbers");
 
 		_digitFormat = @base;
 		_base = string.Equals(@base, "B", StringComparison.OrdinalIgnoreCase) ? 2 : string.Equals(@base, "X", StringComparison.OrdinalIgnoreCase) ? 16 : 10;
@@ -138,7 +62,7 @@ public class DisplayItemDigits : DisplayItemBase, INotifyPropertyChanged
 
 		SubmitCommand = new Command(() => ItemCommand.Execute(Value), () => SelectedDigits.Take(_displayedDigits).All(digit => digit != null));
 
-		// force change notification cuz change of array elements do not trigger property change notification. Therefore notification is possibly only sent on initial creation
+		// force change notification cuz change of array elements do not trigger property change notification. Therefore, notification is possibly only sent on initial creation
 		OnPropertyChanged(nameof(AvailableDigits));
 	}
 
@@ -153,7 +77,7 @@ public class DisplayItemDigits : DisplayItemBase, INotifyPropertyChanged
 
 	public ICommand SubmitCommand { get; init; }
 
-	public int Value
+	internal int Value
 	{
 		get => SelectedDigits.Where(digit => digit != null).Sum(digit => digit.RawValue * (int)Math.Pow(_base, digit.Position));
 		set
@@ -193,60 +117,7 @@ public class DisplayItemDigits : DisplayItemBase, INotifyPropertyChanged
 	#endregion
 }
 
-
-public class DisplayItemEntry : DisplayItemBase, INotifyPropertyChanged
-{
-	private string _text;
-
-	public DisplayItemEntry() => SubmitCommand = new Command(() => ItemCommand.Execute(Text), () => !string.IsNullOrWhiteSpace(Text));
-
-	public string Text
-	{
-		get => _text;
-		set
-		{
-			if (SetField(ref _text, value))
-				((Command)SubmitCommand).ChangeCanExecute();
-		}
-	}
-
-	public Color TextColor { get; set; }
-	public string TextPlaceHolder { get; set; }
-	public Keyboard Keyboard { get; set; }
-	public int MaxLength { get; set; }
-
-	public ICommand SubmitCommand { get; init; }
-
-	#region INotifyPropertyChanged
-
-	public event PropertyChangedEventHandler PropertyChanged;
-
-	private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
-	{
-		if (EqualityComparer<T>.Default.Equals(field, value))
-			return false;
-
-		field = value;
-		OnPropertyChanged(propertyName);
-		return true;
-	}
-
-	private void OnPropertyChanged([CallerMemberName] string propertyName = null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); }
-
-	#endregion
-}
-
-
-public interface IDigit
-{
-	public int RawValue { get; }
-	public string DisplayValue { get; }
-
-	public int Position { get; }
-}
-
-
-public class Digit : IDigit
+internal class Digit : IDigit
 {
 	private readonly string _format;
 	private readonly int _base;
@@ -274,5 +145,12 @@ public class Digit : IDigit
 
 	public string DisplayValue => _base == 2 ? Convert.ToString(RawValue, _base) : RawValue.ToString(_format); // int.ToString(format) "B" format is supported only for integral types and only on .NET 8+.
 
+	public int Position { get; }
+}
+
+internal interface IDigit
+{
+	public int RawValue { get; }
+	public string DisplayValue { get; }
 	public int Position { get; }
 }

@@ -1,4 +1,7 @@
-﻿namespace BLEPoC.Ui.Pages;
+﻿using BLEPoC.Utility;
+
+
+namespace BLEPoC.Ui.Pages.Basic;
 
 internal class TabbedCustom : TabbedPage
 {

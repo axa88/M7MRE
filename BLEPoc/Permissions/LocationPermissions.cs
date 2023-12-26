@@ -11,13 +11,7 @@ internal partial class LocationPermissions : LocationWhenInUse, IPermissionPromp
 }
 
 
-internal class CoarseLocationPermissions : LocationPermissions
-{
-	public CoarseLocationPermissions() : base("Coarse") { }
-}
+internal class CoarseLocationPermissions() : LocationPermissions("Coarse");
 
 
-internal class FineLocationPermissions : LocationPermissions
-{
-	public FineLocationPermissions() : base("Fine") { }
-}
+internal class FineLocationPermissions() : LocationPermissions("Fine");

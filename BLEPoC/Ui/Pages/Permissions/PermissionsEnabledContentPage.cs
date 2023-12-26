@@ -1,9 +1,9 @@
 ﻿using BLEPoC.Permissions;
 
 
-namespace BLEPoC;
+namespace BLEPoC.Ui.Pages.Permissions;
 
-public class PermissionsEnabledContentPage : ContentPage, IDisposable, IAsyncDisposable
+public class PermissionsEnabledContentPage : ContentPage, IDisposable, IAsyncDisposable // ToDo eliminate partial pages so this can be made internal
 {
 	private readonly bool _checkPermissionsOnStart;
 	private readonly bool _checkPermissionsOnResumed;

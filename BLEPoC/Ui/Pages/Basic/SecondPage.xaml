@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<blePoC:PermissionsEnabledContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<permissions:PermissionsEnabledContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 							          xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 							          xmlns:blePoC="using:BLEPoC"
-							          x:Class="BLEPoC.Ui.Pages.SecondPage">
+							          xmlns:permissions="clr-namespace:BLEPoC.Ui.Pages.Permissions"
+							          x:Class="BLEPoC.Ui.Pages.Basic.SecondPage">
 	<ScrollView>
 		<VerticalStackLayout
             Spacing="25"
@@ -32,4 +33,4 @@
 		</VerticalStackLayout>
 	</ScrollView>
 
-</blePoC:PermissionsEnabledContentPage>
+</permissions:PermissionsEnabledContentPage>

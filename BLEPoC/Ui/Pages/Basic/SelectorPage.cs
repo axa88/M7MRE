@@ -1,14 +1,16 @@
-﻿using BLEPoC.Ble;
-using BLEPoC.Permissions;
-using BLEPoC.Ui.Controls;
-using BLEPoC.Ui.Pages;
+﻿using BLEPoC.Permissions;
+using BLEPoC.Ui.Pages.Ble;
+using BLEPoC.Ui.Pages.Controls;
+using BLEPoC.Ui.Pages.Permissions;
+using BLEPoC.Ui.ViewModels.Controls;
+using BLEPoC.Utility;
 
 
-namespace BLEPoC;
+namespace BLEPoC.Ui.Pages.Basic;
 
-public class SelectorPage : PermissionsEnabledContentPage
+internal class SelectorPage : PermissionsEnabledContentPage
 {
-	public SelectorPage() : base(true, true)
+	internal SelectorPage() : base(true, true)
 	{
 		Button contentWindowButton = new() { Text = "Content Page Windows" };
 		contentWindowButton.Clicked += (_, __) =>

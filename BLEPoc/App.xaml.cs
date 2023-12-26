@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 
-using BLEPoC.Ble;
+using BLEPoC.Ui.Pages.Basic;
+using BLEPoC.Utility;
+
 
 namespace BLEPoC;
 

@@ -7,13 +7,13 @@ using Plugin.BLE;
 using Plugin.BLE.Abstractions.Contracts;
 
 
-namespace BLEPoC.Ble;
+namespace BLEPoC.Ui.ViewModels.Ble;
 
-internal class BleViewModel : INotifyPropertyChanged
+internal class BleStatusViewModel : INotifyPropertyChanged
 {
 	private readonly IBluetoothLE _ble;
 
-	public BleViewModel()
+	internal BleStatusViewModel()
 	{
 		_ble = CrossBluetoothLE.Current;
 
@@ -97,6 +97,8 @@ internal class BleViewModel : INotifyPropertyChanged
 		await _ble.Adapter.StartScanningForDevicesAsync();
 	}
 
+	#region INotifyPropertyChanged
+
 	public event PropertyChangedEventHandler PropertyChanged;
 
 	private void OnPropertyChanged([CallerMemberName] string propertyName = null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); }
@@ -110,6 +112,8 @@ internal class BleViewModel : INotifyPropertyChanged
 		OnPropertyChanged(propertyName);
 		return true;
 	}
+
+	#endregion
 }
 
 // you have to use the Adapter "DeviceAdvertised" event after discovering a device to get further advertising data

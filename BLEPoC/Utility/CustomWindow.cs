@@ -1,4 +1,4 @@
-﻿namespace BLEPoC;
+﻿namespace BLEPoC.Utility;
 
 internal class CustomWindow : Window
 {

@@ -1,7 +1,9 @@
 ﻿using BLEPoC.Permissions;
+using BLEPoC.Ui.Pages.Permissions;
+using BLEPoC.Utility;
 
 
-namespace BLEPoC.Ui.Pages;
+namespace BLEPoC.Ui.Pages.Basic;
 
 public partial class SecondPage : PermissionsEnabledContentPage
 {

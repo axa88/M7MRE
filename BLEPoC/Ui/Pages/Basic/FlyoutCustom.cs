@@ -1,5 +1,7 @@
-﻿using Microsoft.Maui.Devices;
-namespace BLEPoC.Ui.Pages;
+﻿using BLEPoC.Utility;
+
+
+namespace BLEPoC.Ui.Pages.Basic;
 
 internal class FlyoutCustom : FlyoutPage
 {
