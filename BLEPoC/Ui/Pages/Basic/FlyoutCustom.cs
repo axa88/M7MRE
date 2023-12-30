@@ -1,5 +1,7 @@
 ﻿using BLEPoC.Utility;
 
+using static System.Reflection.MethodBase;
+
 
 namespace BLEPoC.Ui.Pages.Basic;
 
@@ -42,4 +44,18 @@ internal class FlyoutCustom : FlyoutPage
 				IsPresented = false;
 		};
 	}
+
+	internal event EventHandler<TraceEventArgs> BackButtonPressing;
+
+	#region Overrides of NavigationPage
+
+	protected override bool OnBackButtonPressed()
+	{
+		OnBackButtonPressing(GetCurrentMethod()?.Name);
+		return base.OnBackButtonPressed();
+	}
+
+	#endregion
+
+	private void OnBackButtonPressing(string originEvent) => BackButtonPressing?.Invoke(this, new TraceEventArgs(originEvent));
 }

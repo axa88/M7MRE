@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-using BLEPoC.Ui.Pages.Basic;
+﻿using BLEPoC.Ui.Pages.Basic;
 using BLEPoC.Utility;
 
 
@@ -12,41 +10,32 @@ public partial class App : Application
 	{
 		InitializeComponent();
 		_ = new LifeCycleTracing(this, nameof(App));
-
-		//MainPage = new MainPage { Title = "#0" }; // ContentPage
-		//MainPage = new NavigationPage(new MainPage { Title = "#0" }); // NavigationPage
-		//MainPage = new TabbedPage { Title = "#0", Children = { new MainPage { Title = "#0" } } }; // TabbedPage
 	}
+
+	internal event EventHandler<TraceEventArgs> Starting;
+	internal event EventHandler<TraceEventArgs> Resuming;
+	internal event EventHandler<TraceEventArgs> Sleeping;
+	internal event EventHandler<TraceEventArgs> CreatingWindow;
 
 	#region Overrides of Application
 
 	protected override Window CreateWindow(IActivationState activationState)
 	{
-		Trace.WriteLine("App.CreateWindow");
-		//return new CustomWindow(new MainPage(true, true, "CPage #0"), "Window #0"); // test multi window using 2 windows with ContentPages
-		//return new CustomWindow(new NavigationPage(new MainPage(true, true, "CPage #0")) { Title = "Nav" }, "Window #0"); // test NavigationPage using built in stacked ContentPages
-		//return new CustomWindow(new TabbedPage { Title = "Tab #0", Children = { new MainPage(true, true, "CPage #0") } }, "Window #0"); // test TabbedPage using multiple tabs of ContentPages
-		//return new CustomWindow(new FlyoutCustom(new MainPage(true, true, "Flyout"), new SecondPage(true, true, "Detail"), "FlyoutPage"), "Window #0" ); // test FlyoutPage using ContentPages for the Flyout and Detail pages
-		return new CustomWindow(new SelectorPage(), "S.Window");
+		OnCreatingWindow(nameof(CreateWindow));
+		return new CustomWindow(new SelectorPage(), "S.Window"); // ToDo eliminate hardcode
 	}
 
-	protected override void OnStart()
-	{
-		base.OnStart();
-		Trace.WriteLine("App.OnStart");
-	}
-
-	protected override void OnResume()
-	{
-		base.OnResume();
-		Trace.WriteLine("App.OnResume");
-	}
-
-	protected override void OnSleep()
-	{
-		base.OnSleep();
-		Trace.WriteLine("App.OnSleep");
-	}
+	protected override void OnStart() => OnStarting(nameof(OnStart)); //base.OnStart(); is empty
+	protected override void OnResume() => OnResuming(nameof(OnResume)); //base.OnResume(); is empty
+	protected override void OnSleep() => OnSleeping(nameof(OnSleep)); //base.OnSleep(); is empty
 
 	#endregion
+
+	private void OnStarting(string originEvent) => Starting?.Invoke(this, new TraceEventArgs(originEvent));
+
+	private void OnResuming(string originEvent) => Resuming?.Invoke(this, new TraceEventArgs(originEvent));
+
+	private void OnSleeping(string originEvent) => Sleeping?.Invoke(this, new TraceEventArgs(originEvent));
+
+	private void OnCreatingWindow(string originEvent) => CreatingWindow?.Invoke(this, new TraceEventArgs(originEvent));
 }
