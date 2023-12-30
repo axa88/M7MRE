@@ -7,7 +7,7 @@ namespace BLEPoC.Permissions;
 
 internal sealed class PermissionsProcessor
 {
-	private readonly Dictionary<Window, SubbedProperties> _subscribedWindows = new();
+	private readonly Dictionary<Window, SubbedProperties> _subscribedWindows = [];
 	private bool _permissionGranted;
 
 	// Explicit static constructor tells compiler not to mark type as beforefieldinit https://csharpindepth.com/Articles/BeforeFieldInit
@@ -52,6 +52,9 @@ internal sealed class PermissionsProcessor
 
 	internal void Subscribe(Page page)
 	{
+		if (page.Window == null)
+			throw new NullReferenceException($"Cannot {nameof(Subscribe)} {page.Title} to {nameof(PermissionsProcessor)}, as the page is not assigned to a {nameof(page.Window)}");
+
 		var window = page.Window;
 		if (_subscribedWindows.TryGetValue(window, out var windowProperties))
 		{
@@ -70,6 +73,9 @@ internal sealed class PermissionsProcessor
 
 	internal void Unsubscribe(Page page)
 	{
+		if (page.Window == null)
+			throw new NullReferenceException($"Cannot {nameof(Unsubscribe)} {page.Title} from {nameof(PermissionsProcessor)}, as the page is not assigned to a {nameof(page.Window)}");
+
 		if (_subscribedWindows.TryGetValue(page.Window, out var windowProperties))
 		{
 			windowProperties.Pages.Remove(page);
@@ -79,6 +85,9 @@ internal sealed class PermissionsProcessor
 
 	internal async ValueTask UnsubscribeAsync(Page page)
 	{
+		if (page.Window == null)
+			throw new NullReferenceException($"Cannot {nameof(Unsubscribe)} {page.Title} from {nameof(PermissionsProcessor)}, as the page is not assigned to a {nameof(page.Window)}");
+
 		if (_subscribedWindows.TryGetValue(page.Window, out var windowProperties))
 		{
 			windowProperties.Pages.Remove(page);
@@ -265,7 +274,7 @@ internal sealed class PermissionsProcessor
 		{
 			ResumedTimer = new(timerCallback, window, Timeout.Infinite, Timeout.Infinite);
 			Cts = new CancellationTokenSource();
-			Pages = new List<Page>();
+			Pages = [];
 			#if ANDROID
 			PlatformSpecificWindowIdentifier = Platform.CurrentActivity;
 			#endif

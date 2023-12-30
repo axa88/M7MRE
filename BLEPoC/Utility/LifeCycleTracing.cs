@@ -15,12 +15,12 @@ internal class LifeCycleTracing
 		page.Title = string.IsNullOrWhiteSpace(id) ? page.GetType().ToString() : id;
 		Trace.WriteLine($"{page.Title}.ctor");
 
-		page.Appearing += (_, __) => TraceIt(page.Title, nameof(page.Appearing));
-		page.Disappearing += (_, __) => TraceIt(page.Title, nameof(page.Disappearing));
+		page.Appearing += (_, _) => TraceIt(page.Title, nameof(page.Appearing));
+		page.Disappearing += (_, _) => TraceIt(page.Title, nameof(page.Disappearing));
 		page.Focused += (_, focusEventArgs) => TraceIt(page.Title, nameof(page.Focused), focusEventArgs);
 		page.Unfocused += (_, focusEventArgs) => TraceIt(page.Title, nameof(page.Unfocused), focusEventArgs);
-		page.Loaded += (_, __) => TraceIt(page.Title, nameof(page.Loaded));
-		page.Unloaded += (_, __) => TraceIt(page.Title, nameof(page.Unloaded));
+		page.Loaded += (_, _) => TraceIt(page.Title, nameof(page.Loaded));
+		page.Unloaded += (_, _) => TraceIt(page.Title, nameof(page.Unloaded));
 	}
 
 	internal LifeCycleTracing(Window window, string id = null)
@@ -28,12 +28,12 @@ internal class LifeCycleTracing
 		window.Title = string.IsNullOrWhiteSpace(id) ? nameof(CustomWindow) : id;
 		Trace.WriteLine($"{window.Title}.ctor");
 
-		window.Created += (_, __) => TraceIt(window.Title, nameof(window.Created));
-		window.Resumed += (_, __) => TraceIt(window.Title, nameof(window.Resumed));
-		window.Activated += (_, __) => TraceIt(window.Title, nameof(window.Activated));
-		window.Deactivated += (_, __) => TraceIt(window.Title, nameof(window.Deactivated));
-		window.Stopped += (_, __) => TraceIt(window.Title, nameof(window.Stopped));
-		window.Destroying += (_, __) => TraceIt(window.Title, nameof(window.Destroying));
+		window.Created += (_, _) => TraceIt(window.Title, nameof(window.Created));
+		window.Resumed += (_, _) => TraceIt(window.Title, nameof(window.Resumed));
+		window.Activated += (_, _) => TraceIt(window.Title, nameof(window.Activated));
+		window.Deactivated += (_, _) => TraceIt(window.Title, nameof(window.Deactivated));
+		window.Stopped += (_, _) => TraceIt(window.Title, nameof(window.Stopped));
+		window.Destroying += (_, _) => TraceIt(window.Title, nameof(window.Destroying));
 	}
 
 	internal LifeCycleTracing(Application application, string id = null)
@@ -52,28 +52,28 @@ internal class LifeCycleTracing
 
 			#if ANDROID
 			events.AddAndroid(lifecycleBuilder => lifecycleBuilder
-				.OnCreate((activity, bundle) =>TraceIt(idd, nameof(AndroidLifecycle.OnCreate)))
-				.OnStart(activity => TraceIt(idd, nameof(AndroidLifecycle.OnStart)))
-				.OnPause(activity => TraceIt(idd, nameof(AndroidLifecycle.OnPause)))
-				.OnResume(activity => TraceIt(idd, nameof(AndroidLifecycle.OnResume)))
-				.OnStop(activity => TraceIt(idd, nameof(AndroidLifecycle.OnStop)))
-				.OnRestart(activity => TraceIt(idd, nameof(AndroidLifecycle.OnRestart)))
-				.OnDestroy(activity => TraceIt(idd, nameof(AndroidLifecycle.OnDestroy)))
-				.OnBackPressed(activity => TraceIt(idd, nameof(AndroidLifecycle.OnBackPressed)))
-				.OnActivityResult((activity, requestCode, resultCode, data) => TraceIt(idd, nameof(AndroidLifecycle.OnActivityResult)))
-				.OnRequestPermissionsResult((activity, requestCode, permissions, grantResults) => TraceIt(idd, nameof(AndroidLifecycle.OnActivityResult)))
+				.OnCreate((_, _) =>TraceIt(idd, nameof(AndroidLifecycle.OnCreate)))
+				.OnStart(_ => TraceIt(idd, nameof(AndroidLifecycle.OnStart)))
+				.OnPause(_ => TraceIt(idd, nameof(AndroidLifecycle.OnPause)))
+				.OnResume(_ => TraceIt(idd, nameof(AndroidLifecycle.OnResume)))
+				.OnStop(_ => TraceIt(idd, nameof(AndroidLifecycle.OnStop)))
+				.OnRestart(_ => TraceIt(idd, nameof(AndroidLifecycle.OnRestart)))
+				.OnDestroy(_ => TraceIt(idd, nameof(AndroidLifecycle.OnDestroy)))
+				.OnBackPressed(_ => TraceIt(idd, nameof(AndroidLifecycle.OnBackPressed)))
+				.OnActivityResult((_, _, _, _) => TraceIt(idd, nameof(AndroidLifecycle.OnActivityResult)))
+				.OnRequestPermissionsResult((_, _, _, _) => TraceIt(idd, nameof(AndroidLifecycle.OnActivityResult)))
 			);
 			#endif
 
 			#if WINDOWS
 			events.AddWindows(lifecycleBuilder => lifecycleBuilder
-				.OnLaunching((application, launchActivatedEventArgs) => TraceIt(idd, nameof(WindowsLifecycle.OnLaunching)))
-				.OnWindowCreated(window => TraceIt(idd, nameof(WindowsLifecycle.OnWindowCreated)))
-				.OnActivated((window, windowActivatedEventArgs) => TraceIt(idd, $"{nameof(WindowsLifecycle.OnActivated)}:{windowActivatedEventArgs.WindowActivationState}"))
-				.OnLaunched((application, launchActivatedEventArgs) => TraceIt(idd, nameof(WindowsLifecycle.OnLaunched)))
-				.OnResumed(window => TraceIt(idd, nameof(WindowsLifecycle.OnResumed)))
-				.OnClosed((window, windowEventArgs) => TraceIt(idd, nameof(WindowsLifecycle.OnClosed)))
-				.OnPlatformMessage((window, windowsPlatformMessageEventArgs) =>
+				.OnLaunching((_, _) => TraceIt(idd, nameof(WindowsLifecycle.OnLaunching)))
+				.OnWindowCreated(_ => TraceIt(idd, nameof(WindowsLifecycle.OnWindowCreated)))
+				.OnActivated((_, windowActivatedEventArgs) => TraceIt(idd, $"{nameof(WindowsLifecycle.OnActivated)}:{windowActivatedEventArgs.WindowActivationState}"))
+				.OnLaunched((_, _) => TraceIt(idd, nameof(WindowsLifecycle.OnLaunched)))
+				.OnResumed(_ => TraceIt(idd, nameof(WindowsLifecycle.OnResumed)))
+				.OnClosed((_, _) => TraceIt(idd, nameof(WindowsLifecycle.OnClosed)))
+				.OnPlatformMessage((_, windowsPlatformMessageEventArgs) =>
 				{
 					// https://www.autoitscript.com/autoit3/docs/appendix/WinMsgCodes.htm
 					// https://learn.microsoft.com/en-us/windows/win32/winmsg/window-notifications

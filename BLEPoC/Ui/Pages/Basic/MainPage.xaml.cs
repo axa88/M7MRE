@@ -12,7 +12,7 @@ public partial class MainPage : PermissionsEnabledContentPage
 	public MainPage(Page secondPage, bool checkPermissionsOnStart, bool checkPermissionsOnResumed, string title = "") : base(checkPermissionsOnStart, checkPermissionsOnResumed)
 	{
 		_secondPage = secondPage;
-		new LifeCycleTracing(this, title);
+		_ = new LifeCycleTracing(this, title);
 		InitializeComponent();
 	}
 
@@ -29,9 +29,7 @@ public partial class MainPage : PermissionsEnabledContentPage
 				await np.PushAsync(_secondPage);
 				break;
 			case TabbedPage tp:
-				if (tp.Children.Contains(_secondPage))
-					tp.Children.Remove(_secondPage);
-				else
+				if (!tp.Children.Remove(_secondPage))
 					tp.Children.Add(_secondPage);
 				break;
 			case FlyoutPage fp:

@@ -9,7 +9,7 @@ public partial class SecondPage : PermissionsEnabledContentPage
 {
 	public SecondPage(bool checkPermissionsOnStart, bool checkPermissionsOnResumed, string title = "") : base(checkPermissionsOnStart, checkPermissionsOnResumed)
 	{
-		new LifeCycleTracing(this, title);
+		_ = new LifeCycleTracing(this, title);
 		InitializeComponent();
 	}
 

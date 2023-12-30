@@ -16,8 +16,16 @@ internal class BondedDevicesViewModel : DevicesViewModel
 		var adapter = CrossBluetoothLE.Current.Adapter;
 		Devices = adapter.BondedDevices;
 		Populate();
-		adapter.DeviceBondStateChanged += (sender, bondStateChangedEventArgs) => Populate();
-		Items.CollectionChanged += (sender, args) => { };
+		adapter.DeviceBondStateChanged += (_, bondStateChangedEventArgs) =>
+		{
+			Trace.WriteLine($"{nameof(adapter.DeviceBondStateChanged)} - {nameof(bondStateChangedEventArgs.Address)}:{bondStateChangedEventArgs.Address} {nameof(bondStateChangedEventArgs.State)}:{bondStateChangedEventArgs.State}");
+			Populate();
+		};
+		Items.CollectionChanged += (_, notifyCollectionChangedEventArgs) =>
+		{
+			Trace.WriteLine($"{nameof(Items.CollectionChanged)}");
+			Trace.WriteLine($"{nameof(notifyCollectionChangedEventArgs.Action)}:{notifyCollectionChangedEventArgs.Action}");
+		};
 	}
 }
 
@@ -28,22 +36,22 @@ internal class ConnectedDevicesViewModel : DevicesViewModel
 		var adapter = CrossBluetoothLE.Current.Adapter;
 		Devices = adapter.ConnectedDevices;
 		Populate();
-		adapter.DeviceConnected += (sender, args) =>
+		adapter.DeviceConnected += (_, args) =>
 		{
 			Trace.WriteLine($"{nameof(adapter.DeviceConnected)} : {args.Device.Id}");
 			Populate();
 		};
-		adapter.DeviceDisconnected += (sender, args) =>
+		adapter.DeviceDisconnected += (_, args) =>
 		{
 			Trace.WriteLine($"{nameof(adapter.DeviceDisconnected)} : {args.Device.Id}");
 			Populate();
 		};
-		adapter.DeviceConnectionLost += (sender, args) =>
+		adapter.DeviceConnectionLost += (_, args) =>
 		{
 			Trace.WriteLine($"{nameof(adapter.DeviceConnectionLost)} : {args.ErrorMessage}");
 			Populate();
 		};
-		adapter.DeviceConnectionError += (sender, args) =>
+		adapter.DeviceConnectionError += (_, args) =>
 		{
 			Trace.WriteLine($"{nameof(adapter.DeviceConnectionError)} : {args.ErrorMessage}");
 			Populate();

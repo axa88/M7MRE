@@ -23,7 +23,6 @@ internal class ControlCollectionViewModel : CollectionBaseModel, INotifyProperty
 	public IDisplayItem SelectedDisplayItem { get; set; }
 
 	// ReSharper disable MemberCanBePrivate.Global
-	public ObservableCollection<IDisplayItem> Items { get; private set; }
 	public ObservableCollection<object> SelectedMonkeys { get; set; }
 	// ReSharper restore MemberCanBePrivate.Global
 

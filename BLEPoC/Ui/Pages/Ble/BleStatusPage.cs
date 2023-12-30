@@ -40,13 +40,13 @@ internal class BleStatusPage : PermissionsEnabledContentPage
 		var supportsExtendedAdvertisingBorder = new OuterBorder(supportsExtendedAdvertisingLabel);
 
 		Button testCollectionButton = new() { Text = "test Devices" };
-		testCollectionButton.Clicked += (_, __) => Application.Current?.OpenWindow(new CustomWindow(new CollectionPage(new TestDevicesViewModel())));
+		testCollectionButton.Clicked += (_, _) => Application.Current?.OpenWindow(new CustomWindow(new CollectionPage(new TestDevicesViewModel())));
 
 		Button bondedDeviceButton = new() { Text = "Bonded Devices" };
-		bondedDeviceButton.Clicked += (_, __) => Application.Current?.OpenWindow(new CustomWindow(new CollectionPage(new BondedDevicesViewModel())));
+		bondedDeviceButton.Clicked += (_, _) => Application.Current?.OpenWindow(new CustomWindow(new CollectionPage(new BondedDevicesViewModel())));
 
 		Button connectedDeviceButton = new() { Text = "Connected Devices" };
-		connectedDeviceButton.Clicked += (_, __) => Application.Current?.OpenWindow(new CustomWindow(new CollectionPage(new ConnectedDevicesViewModel())));
+		connectedDeviceButton.Clicked += (_, _) => Application.Current?.OpenWindow(new CustomWindow(new CollectionPage(new ConnectedDevicesViewModel())));
 
 		var verticalStack = new VerticalStackLayout { Children = { isAvailableBorder , isOnBorder, stateBorder, supportsCodedPhyBorder, supportsExtendedAdvertisingBorder, bondedDeviceButton, connectedDeviceButton, testCollectionButton } };
 		//var outerBorder = new OuterBorder(verticalStack);
@@ -63,7 +63,7 @@ internal class OuterBorder : Border
 		BackgroundColor = Colors.Transparent;
 		Padding = new Thickness(20);
 		StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(15, 0, 0, 10) };
-		Stroke = new LinearGradientBrush { EndPoint = new Point(0, 1), GradientStops = new GradientStopCollection { new() { Color = Colors.Orange, Offset = 0.1f }, new() { Color = Colors.Brown, Offset = 1.0f } } };
+		Stroke = new LinearGradientBrush { EndPoint = new Point(0, 1), GradientStops = [new() { Color = Colors.Orange, Offset = 0.1f }, new() { Color = Colors.Brown, Offset = 1.0f }] };
 		Content = content;
 	}
 }

@@ -30,13 +30,13 @@ internal class FlyoutCustom : FlyoutPage
 				secondPage.UpdateLabel2($"{nameof(FlyoutLayoutBehavior)}:{FlyoutLayoutBehavior}{Environment.NewLine}{nameof(IsPresented)}:{IsPresented}");
 		};
 
-		Flyout.Focused += (_, __) =>
+		Flyout.Focused += (_, _) =>
 		{
 			if (DeviceInfo.Platform == DevicePlatform.WinUI && FlyoutLayoutBehavior is FlyoutLayoutBehavior.Popover or FlyoutLayoutBehavior.SplitOnPortrait)
 				IsPresented = true;
 		};
 
-		Flyout.Unfocused += (_, __) =>
+		Flyout.Unfocused += (_, _) =>
 		{
 			if (DeviceInfo.Platform == DevicePlatform.WinUI && FlyoutLayoutBehavior is FlyoutLayoutBehavior.Popover or FlyoutLayoutBehavior.SplitOnPortrait)
 				IsPresented = false;

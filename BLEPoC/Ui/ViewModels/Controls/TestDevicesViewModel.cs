@@ -31,7 +31,7 @@ internal class TestDevicesViewModel : CollectionBaseModel
 			Items.Clear();
 
 			Random rnd = new();
-			var enumerable = _devices.OrderBy(x => rnd.Next()).Take(3);
+			var enumerable = _devices.OrderBy(_ => rnd.Next()).Take(3);
 			foreach (var valueTuple in enumerable)
 				Items.Add(new Summary { Primary = valueTuple.Item1, Secondary = valueTuple.Item2 });
 		});

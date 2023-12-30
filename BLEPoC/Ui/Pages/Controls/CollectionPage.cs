@@ -27,6 +27,7 @@ internal class CollectionPage : ContentPage
 		Content = new Grid { Margin = 20, Children = { new CollectionViewCustom() } };
 		BindingContext = bindingContextViewModel;
 
+		// ReSharper disable once UnusedParameter.Local
 		Microsoft.Maui.Handlers.PickerHandler.Mapper.AppendToMapping("MyCustomization", (handler, view) =>
 		{
 		#if ANDROID
@@ -59,7 +60,12 @@ internal class CollectionViewCustom : CollectionView
 		ItemsLayout = new LinearItemsLayout(ItemsLayoutOrientation.Vertical) { ItemSpacing = 2 };
 		VerticalScrollBarVisibility = ScrollBarVisibility.Always;
 		SelectionMode = SelectionMode.Single;
-		SelectionChanged += (sender, selectionChangedEventArgs) => Trace.WriteLine($"{nameof(SelectionChanged)}");
+		SelectionChanged += (_, selectionChangedEventArgs) =>
+		{
+			Trace.WriteLine($"{nameof(SelectionChanged)}");
+			Trace.WriteLine($"{nameof(selectionChangedEventArgs.PreviousSelection)} : {selectionChangedEventArgs.PreviousSelection}");
+			Trace.WriteLine($"{nameof(selectionChangedEventArgs.CurrentSelection)} : {selectionChangedEventArgs.CurrentSelection}");
+		};
 		SelectionChangedCommand = new Command<object>(o => Trace.WriteLine($"{nameof(SelectionChangedCommand)} : {o}"));
 	}
 }
@@ -198,12 +204,14 @@ internal class DisplayItemTemplateDigits : DataTemplate
 			picker4.SetBinding(Picker.SelectedItemProperty, new MultiBinding { Converter = digitMuVaCo, Mode = BindingMode.TwoWay, Bindings = new Collection<BindingBase> { new Binding($"{nameof(DigitIo.SelectedDigits)}[4]"), new Binding(nameof(DigitIo.SelectedDigitChange), BindingMode.OneWayToSource) } });
 			picker5.SetBinding(Picker.SelectedItemProperty, new MultiBinding { Converter = digitMuVaCo, Mode = BindingMode.TwoWay, Bindings = new Collection<BindingBase> { new Binding($"{nameof(DigitIo.SelectedDigits)}[5]"), new Binding(nameof(DigitIo.SelectedDigitChange), BindingMode.OneWayToSource) } });
 
+			// ReSharper disable AccessToStaticMemberViaDerivedType
 			picker0.SetBinding(Picker.IsVisibleProperty, $"{nameof(DigitIo.IsVisible)}[0]");
 			picker1.SetBinding(Picker.IsVisibleProperty, $"{nameof(DigitIo.IsVisible)}[1]");
 			picker2.SetBinding(Picker.IsVisibleProperty, $"{nameof(DigitIo.IsVisible)}[2]");
 			picker3.SetBinding(Picker.IsVisibleProperty, $"{nameof(DigitIo.IsVisible)}[3]");
 			picker4.SetBinding(Picker.IsVisibleProperty, $"{nameof(DigitIo.IsVisible)}[4]");
 			picker5.SetBinding(Picker.IsVisibleProperty, $"{nameof(DigitIo.IsVisible)}[5]");
+			// ReSharper restore AccessToStaticMemberViaDerivedType
 
 			HorizontalStackLayout pickerLayout = new() {Children = { picker5, picker4, picker3, picker2, picker1, picker0 } };
 
@@ -227,6 +235,7 @@ internal class DisplayItemTemplateEntry : DataTemplate
 			entry.SetBinding(Entry.TextProperty, nameof(TextIo.Text));
 			entry.SetBinding(Entry.TextColorProperty, nameof(TextIo.TextColor));
 			entry.SetBinding(Entry.PlaceholderProperty, nameof(TextIo.TextPlaceHolder));
+			// ReSharper disable once AccessToStaticMemberViaDerivedType
 			entry.SetBinding(Entry.MaxLengthProperty, nameof(TextIo.MaxLength));
 			entry.SetBinding(Entry.KeyboardProperty, nameof(TextIo.Keyboard));
 			entry.SetBinding(Entry.ReturnCommandProperty, nameof(TextIo.SubmitCommand));

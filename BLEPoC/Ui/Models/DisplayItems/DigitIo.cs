@@ -15,7 +15,7 @@ internal class DigitIo : DisplayItem, INotifyPropertyChanged
 	internal DigitIo(int count, string @base)
 	{
 		if (count > _maxDigits)
-			throw new ArgumentOutOfRangeException(nameof(DigitIo), "too many digits to display");
+			throw new ArgumentOutOfRangeException(nameof(count),$"{count} is too many digits to display");
 
 		_digitFormat = @base;
 		_base = string.Equals(@base, "B", StringComparison.OrdinalIgnoreCase) ? 2 : string.Equals(@base, "X", StringComparison.OrdinalIgnoreCase) ? 16 : 10;
@@ -127,12 +127,12 @@ internal class Digit : IDigit
 		if (@base == 2)
 		{
 			if (Convert.ToString(value, @base).Length > 1)
-				throw new ArgumentOutOfRangeException(nameof(Digit), $"Digit value {value} is too large to be represented as a single character in base {@base}");
+				throw new ArgumentOutOfRangeException(nameof(value), $"Digit value: {value} is too large to be represented as a single character in base {@base}");
 		}
 		else
 		{
 			if (value.ToString(format).Length > 1) // int.ToString(format) "B" format is supported only for integral types and only on .NET 8+.
-				throw new ArgumentOutOfRangeException(nameof(Digit), $"Digit value {value} is too large to be represented as a single character in base {@base}");
+				throw new ArgumentOutOfRangeException(nameof(value), $"Digit value {value} is too large to be represented as a single character in base {@base}");
 		}
 
 		_format = format;

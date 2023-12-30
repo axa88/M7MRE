@@ -36,7 +36,7 @@ internal class BleStatusViewModel : INotifyPropertyChanged
 				Trace.WriteLine($"{nameof(bondedDevice.IsConnectable)}:{bondedDevice.IsConnectable}");
 			}
 
-			_ble.Adapter.DeviceBondStateChanged += (sender, args) =>
+			_ble.Adapter.DeviceBondStateChanged += (_, args) =>
 			{
 				Trace.WriteLine($"event: {nameof(_ble.Adapter.DeviceBondStateChanged)}");
 				Trace.WriteLine($"{nameof(args.Address)}:{args.Address}");
@@ -66,7 +66,7 @@ internal class BleStatusViewModel : INotifyPropertyChanged
 			}
 		}
 
-		_ble.StateChanged += (sender, args) =>
+		_ble.StateChanged += (_, args) =>
 		{
 			Trace.WriteLine($"event: {nameof(_ble.StateChanged)}");
 
@@ -92,8 +92,8 @@ internal class BleStatusViewModel : INotifyPropertyChanged
 
 	public async void StartScan()
 	{
-		List<IDevice> deviceList = new();
-		_ble.Adapter.DeviceDiscovered += (s, a) => deviceList.Add(a.Device);
+		List<IDevice> deviceList = [];
+		_ble.Adapter.DeviceDiscovered += (s, deviceEventArgs) => deviceList.Add(deviceEventArgs.Device);
 		await _ble.Adapter.StartScanningForDevicesAsync();
 	}
 
