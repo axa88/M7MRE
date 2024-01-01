@@ -29,7 +29,7 @@ internal class LifeCycleTracing
 
 		switch (page)
 		{
-			case NavigationCustom navigationPage:
+			case NavigationPageCustom navigationPage:
 				//navigationPage.Pushed += (_, navigationEventArgs) => TraceIt(GetHeader(), $"{nameof(navigationPage.Pushed)}:{navigationEventArgs.Page.Title}");
 				navigationPage.Pushed += (_, navigationEventArgs) => TraceIt(GetHeader(), nameof(navigationPage.Pushed), navigationEventArgs);
 				navigationPage.Popped += (_, navigationEventArgs) => TraceIt(GetHeader(), nameof(navigationPage.Popped), navigationEventArgs);
@@ -37,13 +37,13 @@ internal class LifeCycleTracing
 				// protected overrides
 				navigationPage.BackButtonPressing += (_, traceEventArgs) => TraceIt(GetHeader(), traceEventArgs.EventName);
 				break;
-			case TabbedCustom tabbedPage:
+			case TabbedPageCustom tabbedPage:
 				tabbedPage.CurrentPageChanged += (_, _) => TraceIt(GetHeader(), nameof(tabbedPage.CurrentPageChanged));
 				tabbedPage.PagesChanged += (_, notifyCollectionChangedEventArgs) => TraceIt(GetHeader(), nameof(tabbedPage.PagesChanged), notifyCollectionChangedEventArgs);
 				// protected overrides
 				tabbedPage.BackButtonPressing += (_, traceEventArgs) => TraceIt(GetHeader(), traceEventArgs.EventName);
 				break;
-			case FlyoutCustom flyoutPage:
+			case FlyoutPageCustom flyoutPage:
 				// protected overrides
 				flyoutPage.BackButtonPressing += (_, traceEventArgs) => TraceIt(GetHeader(), traceEventArgs.EventName);
 				break;
@@ -53,7 +53,7 @@ internal class LifeCycleTracing
 
 	internal LifeCycleTracing(Window window, string id = null)
 	{
-		window.Title = string.IsNullOrWhiteSpace(id) ? nameof(CustomWindow) : id;
+		window.Title = string.IsNullOrWhiteSpace(id) ? nameof(WindowCustom) : id;
 		Trace.WriteLine($"{window.Title}.ctor");
 
 		window.Created += (_, _) => TraceIt(GetHeader(), nameof(window.Created));

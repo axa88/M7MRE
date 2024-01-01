@@ -4,18 +4,18 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
-using BLEPoC.Ui.Models;
+using BLEPoC.Ui.Models.Collection;
 using BLEPoC.Ui.Models.DisplayItems;
 
 
-namespace BLEPoC.Ui.ViewModels.Controls;
+namespace BLEPoC.Ui.ViewModels.Tests;
 
-internal class ControlCollectionViewModel : CollectionBaseModel, INotifyPropertyChanged
+internal class TestControlsCollectionViewModel : CollectionViewModel, INotifyPropertyChanged
 {
 	private readonly List<IDisplayItem> _displayItems = [];
 	private int _selectionCount = 1;
 
-	internal ControlCollectionViewModel()
+	internal TestControlsCollectionViewModel()
 	{
 		CreateFakeItems(); // mock data
 	}

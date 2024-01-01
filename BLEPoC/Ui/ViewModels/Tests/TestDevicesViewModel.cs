@@ -1,10 +1,10 @@
-﻿using BLEPoC.Ui.Models;
-using BLEPoC.Ui.Models.DisplayItems;
+﻿using BLEPoC.Ui.Models.DisplayItems;
+using BLEPoC.Ui.ViewModels.Ble;
 
 
-namespace BLEPoC.Ui.ViewModels.Controls;
+namespace BLEPoC.Ui.ViewModels.Tests;
 
-internal class TestDevicesViewModel : CollectionBaseModel
+internal class TestDevicesViewModel : DevicesViewModel
 {
 	private readonly List<(string, string)> _devices;
 	private readonly Timer _collectionUpdateTimer;
@@ -23,7 +23,7 @@ internal class TestDevicesViewModel : CollectionBaseModel
 		Items.CollectionChanged += ItemsCollectionChanged;
 	}
 
-	private async void Populate()
+	private new async void Populate()
 	{
 		await MainThread.InvokeOnMainThreadAsync(() =>
 		{

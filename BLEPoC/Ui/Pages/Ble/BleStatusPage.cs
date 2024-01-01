@@ -1,7 +1,7 @@
 ﻿using BLEPoC.Ui.Pages.Controls;
 using BLEPoC.Ui.Pages.Permissions;
 using BLEPoC.Ui.ViewModels.Ble;
-using BLEPoC.Ui.ViewModels.Controls;
+using BLEPoC.Ui.ViewModels.Tests;
 using BLEPoC.Utility;
 
 using Microsoft.Maui.Controls.Shapes;
@@ -40,13 +40,13 @@ internal class BleStatusPage : PermissionsEnabledContentPage
 		var supportsExtendedAdvertisingBorder = new OuterBorder(supportsExtendedAdvertisingLabel);
 
 		Button testCollectionButton = new() { Text = "test Devices" };
-		testCollectionButton.Clicked += (_, _) => Application.Current?.OpenWindow(new CustomWindow(new CollectionPage(new TestDevicesViewModel())));
+		testCollectionButton.Clicked += (_, _) => Application.Current?.OpenWindow(new WindowCustom(new CollectionPage(new TestDevicesViewModel())));
 
 		Button bondedDeviceButton = new() { Text = "Bonded Devices" };
-		bondedDeviceButton.Clicked += (_, _) => Application.Current?.OpenWindow(new CustomWindow(new CollectionPage(new BondedDevicesViewModel())));
+		bondedDeviceButton.Clicked += (_, _) => Application.Current?.OpenWindow(new WindowCustom(new CollectionPage(new BondedDevicesViewModel())));
 
 		Button connectedDeviceButton = new() { Text = "Connected Devices" };
-		connectedDeviceButton.Clicked += (_, _) => Application.Current?.OpenWindow(new CustomWindow(new CollectionPage(new ConnectedDevicesViewModel())));
+		connectedDeviceButton.Clicked += (_, _) => Application.Current?.OpenWindow(new WindowCustom(new CollectionPage(new ConnectedDevicesViewModel())));
 
 		var verticalStack = new VerticalStackLayout { Children = { isAvailableBorder , isOnBorder, stateBorder, supportsCodedPhyBorder, supportsExtendedAdvertisingBorder, bondedDeviceButton, connectedDeviceButton, testCollectionButton } };
 		//var outerBorder = new OuterBorder(verticalStack);

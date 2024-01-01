@@ -5,9 +5,9 @@ using static System.Reflection.MethodBase;
 
 namespace BLEPoC.Ui.Pages.Basic;
 
-internal class FlyoutCustom : FlyoutPage
+internal class FlyoutPageCustom : FlyoutPage
 {
-	internal FlyoutCustom(string title = "")
+	internal FlyoutPageCustom(string title = "")
 	{
 		_ = new LifeCycleTracing(this, title);
 

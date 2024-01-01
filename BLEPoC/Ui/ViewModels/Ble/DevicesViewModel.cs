@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-using BLEPoC.Ui.Models;
+using BLEPoC.Ui.Models.Collection;
 using BLEPoC.Ui.Models.DisplayItems;
 
 using Plugin.BLE;
@@ -59,24 +59,27 @@ internal class ConnectedDevicesViewModel : DevicesViewModel
 	}
 }
 
-internal abstract class DevicesViewModel : CollectionBaseModel
+internal abstract class DevicesViewModel : CollectionViewModel
 {
 	protected IReadOnlyList<IDevice> Devices { private protected get; init; }
 
-	protected void Populate()
+	protected async void Populate()
 	{
-		// ToDo implement a check for changes and +/- only changes
-		Items.Clear();
-
-		if (Devices != null)
+		await MainThread.InvokeOnMainThreadAsync(() =>
 		{
-			foreach (var device in Devices)
-				Items.Add(new Summary { Primary = device.Name, Secondary = $"{device.State}" });
+			// ToDo implement a check for changes and +/- only changes
+			Items.Clear();
 
-			if (!Items.Any())
-				Items.Add(new Summary { Primary = "No Devices" });
-		}
-		else
-			Items.Add(new Summary { Primary = "Devices Not Supported" });
+			if (Devices != null)
+			{
+				foreach (var device in Devices)
+					Items.Add(new Summary { Primary = device.Name, Secondary = $"{device.State}" });
+
+				if (!Items.Any())
+					Items.Add(new Summary { Primary = "No Devices" });
+			}
+			else
+				Items.Add(new Summary { Primary = "Devices Not Supported" });
+		});
 	}
 }

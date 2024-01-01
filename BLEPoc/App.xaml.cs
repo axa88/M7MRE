@@ -22,7 +22,7 @@ public partial class App : Application
 	protected override Window CreateWindow(IActivationState activationState)
 	{
 		OnCreatingWindow(nameof(CreateWindow));
-		return new CustomWindow(new SelectorPage(), "S.Window"); // ToDo eliminate hardcode
+		return new WindowCustom(new SelectorPage(), "S.Window"); // ToDo eliminate hardcode
 	}
 
 	protected override void OnStart() => OnStarting(nameof(OnStart)); //base.OnStart(); is empty

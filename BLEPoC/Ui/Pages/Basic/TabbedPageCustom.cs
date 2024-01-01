@@ -5,9 +5,13 @@ using static System.Reflection.MethodBase;
 
 namespace BLEPoC.Ui.Pages.Basic;
 
-internal class NavigationCustom : NavigationPage
+internal class TabbedPageCustom : TabbedPage
 {
-	internal NavigationCustom(string title = null) : base(new MainPage(new SecondPage(true, true, "NPage #2"), true, true, "NPage #0")) => _ = new LifeCycleTracing(this, title);
+    internal TabbedPageCustom(string title = null)
+    {
+		_ = new LifeCycleTracing(this, title);
+		Children.Add(new MainPage(new SecondPage(true, true, "TPage #2"), true, true, "TPage #0"));
+    }
 
 	internal event EventHandler<TraceEventArgs> BackButtonPressing;
 

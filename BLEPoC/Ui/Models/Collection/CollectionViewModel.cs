@@ -3,9 +3,9 @@
 using BLEPoC.Ui.Models.DisplayItems;
 
 
-namespace BLEPoC.Ui.Models;
+namespace BLEPoC.Ui.Models.Collection;
 
-internal class CollectionBaseModel
+internal abstract class CollectionViewModel
 {
 	// ReSharper disable once MemberCanBeProtected.Global
 	// ReSharper disable once MemberCanBePrivate.Global

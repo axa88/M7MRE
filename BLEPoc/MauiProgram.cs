@@ -1,8 +1,10 @@
-﻿using BLEPoC.Permissions;
-using BLEPoC.Utility;
+﻿#if ANDROID
+using BLEPoC.Permissions;
+using Microsoft.Maui.LifecycleEvents;
+#endif
 
 using Microsoft.Extensions.Logging;
-using Microsoft.Maui.LifecycleEvents;
+using BLEPoC.Utility;
 
 
 namespace BLEPoC;

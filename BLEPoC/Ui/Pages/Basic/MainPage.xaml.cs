@@ -23,7 +23,7 @@ public partial class MainPage : PermissionsEnabledContentPage
 		switch (Window.Page)
 		{
 			/*case ContentPage cp:
-				//Application.Current?.OpenWindow(new CustomWindow(new SecondPage(true, true, "CPage #2"), "Window #2"));
+				//Application.Current?.OpenWindow(new WindowCustom(new SecondPage(true, true, "CPage #2"), "Window #2"));
 				break;*/
 			case NavigationPage np:
 				await np.PushAsync(_secondPage);
