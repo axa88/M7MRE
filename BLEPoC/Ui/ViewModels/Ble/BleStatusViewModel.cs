@@ -36,19 +36,19 @@ internal class BleStatusViewModel : INotifyPropertyChanged
 				Trace.WriteLine($"{nameof(bondedDevice.IsConnectable)}:{bondedDevice.IsConnectable}");
 			}
 
-			_ble.Adapter.DeviceBondStateChanged += (_, args) =>
+			_ble.Adapter.DeviceBondStateChanged += (_, deviceBondStateChangedEventArgs) =>
 			{
 				Trace.WriteLine($"event: {nameof(_ble.Adapter.DeviceBondStateChanged)}");
-				Trace.WriteLine($"{nameof(args.Address)}:{args.Address}");
-				Trace.WriteLine($"{nameof(args.State)}:{args.State}");
+				Trace.WriteLine($"{nameof(deviceBondStateChangedEventArgs.Address)}:{deviceBondStateChangedEventArgs.Address}");
+				Trace.WriteLine($"{nameof(deviceBondStateChangedEventArgs.State)}:{deviceBondStateChangedEventArgs.State}");
 
-				Trace.WriteLine($"{nameof(args.Device.Name)}:{args.Device.Name}");
-				Trace.WriteLine($"{nameof(args.Device.Id)}:{args.Device.Id}");
-				Trace.WriteLine($"{nameof(args.Device.Rssi)}:{args.Device.Rssi}");
-				Trace.WriteLine($"{nameof(args.Device.BondState)}:{args.Device.BondState}");
-				Trace.WriteLine($"{nameof(args.Device.State)}:{args.Device.State}");
-				Trace.WriteLine($"{nameof(args.Device.SupportsIsConnectable)}:{args.Device.SupportsIsConnectable}");
-				Trace.WriteLine($"{nameof(args.Device.IsConnectable)}:{args.Device.IsConnectable}");
+				Trace.WriteLine($"{nameof(deviceBondStateChangedEventArgs.Device.Name)}:{deviceBondStateChangedEventArgs.Device.Name}");
+				Trace.WriteLine($"{nameof(deviceBondStateChangedEventArgs.Device.Id)}:{deviceBondStateChangedEventArgs.Device.Id}");
+				Trace.WriteLine($"{nameof(deviceBondStateChangedEventArgs.Device.Rssi)}:{deviceBondStateChangedEventArgs.Device.Rssi}");
+				Trace.WriteLine($"{nameof(deviceBondStateChangedEventArgs.Device.BondState)}:{deviceBondStateChangedEventArgs.Device.BondState}");
+				Trace.WriteLine($"{nameof(deviceBondStateChangedEventArgs.Device.State)}:{deviceBondStateChangedEventArgs.Device.State}");
+				Trace.WriteLine($"{nameof(deviceBondStateChangedEventArgs.Device.SupportsIsConnectable)}:{deviceBondStateChangedEventArgs.Device.SupportsIsConnectable}");
+				Trace.WriteLine($"{nameof(deviceBondStateChangedEventArgs.Device.IsConnectable)}:{deviceBondStateChangedEventArgs.Device.IsConnectable}");
 			};
 		}
 

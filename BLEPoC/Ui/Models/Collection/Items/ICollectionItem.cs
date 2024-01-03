@@ -1,4 +1,4 @@
-﻿namespace BLEPoC.Ui.Models.DisplayItems
+﻿namespace BLEPoC.Ui.Models.Collection.Items
 {
 	internal interface ICollectionItem
 	{

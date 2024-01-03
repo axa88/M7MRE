@@ -1,11 +1,11 @@
-﻿namespace BLEPoC.Ui.ViewModels.Ble;
+﻿using BLEPoC.Ui.Models.Collection.Items;
 
-internal class BondedDevicesViewModel : DevicesViewModel
+
+namespace BLEPoC.Ui.ViewModels.Ble;
+
+internal class BondedDevicesViewModel<T> : DevicesViewModel<T> where T : ICollectionItem, new()
 {
-	internal BondedDevicesViewModel()
-	{
-		Adapter.DeviceBondStateChanged += (_, bondStateChangedEventArgs) => PopulateCollection(nameof(Adapter.DeviceBondStateChanged), bondStateChangedEventArgs);
-	}
+	internal BondedDevicesViewModel() => Adapter.DeviceBondStateChanged += (_, bondStateChangedEventArgs) => PopulateCollection(nameof(Adapter.DeviceBondStateChanged), bondStateChangedEventArgs);
 
 	#region Overrides of DevicesViewModel
 

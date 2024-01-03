@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 
 using BLEPoC.Ui.Models.Collection;
-using BLEPoC.Ui.Models.DisplayItems;
+using BLEPoC.Ui.Models.Collection.Items;
 
 using Plugin.BLE;
 using Plugin.BLE.Abstractions.Contracts;
@@ -10,7 +10,7 @@ using Plugin.BLE.Abstractions.EventArgs;
 
 namespace BLEPoC.Ui.ViewModels.Ble;
 
-internal abstract class DevicesViewModel : LifeCycleTriggeredCollectionDisplayItems
+internal abstract class DevicesViewModel<T> : LifeCycleTriggeredItemCollection<T> where T : ICollectionItem, new()
 {
 	protected DevicesViewModel()
 	{
@@ -28,7 +28,7 @@ internal abstract class DevicesViewModel : LifeCycleTriggeredCollectionDisplayIt
 
 	protected IReadOnlyList<IDevice> Devices { get; set; }
 
-	#region Overrides of LifeCycleTriggeredCollectionDisplayItems
+	#region Overrides of LifeCycleTriggeredItemCollection
 
 	protected internal override async void PopulateCollection(string caller, EventArgs eventArgs)
 	{
@@ -58,21 +58,21 @@ internal abstract class DevicesViewModel : LifeCycleTriggeredCollectionDisplayIt
 			if (Devices != null)
 			{
 				foreach (var device in Devices)
-					Items.Add(new Summary { Primary = device.Name, Secondary = $"{device.State}" });
+					Items.Add((T)(ICollectionItem)new Summary { Primary = device.Name, Secondary = $"{device.State}" });
 
 				if (!Items.Any())
-					Items.Add(new Summary { Primary = $"No {DeviceType()}" });
+					Items.Add((T)(ICollectionItem)new Summary { Primary = $"No {DeviceType()}" });
 			}
 			else
-				Items.Add(new Summary { Primary = $"{DeviceType()} not Supported on this platform" });
+				Items.Add((T)(ICollectionItem)new Summary { Primary = $"{DeviceType()} not Supported on this platform" });
 		});
 
 		#pragma warning disable IDE0061 // Use block body for local function
 		#pragma warning disable CA2208 // Instantiate argument exceptions correctly
 		string DeviceType() => this switch
 		{
-			BondedDevicesViewModel => nameof(IAdapter.BondedDevices),
-			ConnectedDevicesViewModel => nameof(IAdapter.ConnectedDevices),
+			BondedDevicesViewModel<T> => nameof(IAdapter.BondedDevices),
+			ConnectedDevicesViewModel<T> => nameof(IAdapter.ConnectedDevices),
 			_ => throw new ArgumentOutOfRangeException()
 		};
 		#pragma warning restore CA2208 // Instantiate argument exceptions correctly
@@ -85,26 +85,4 @@ internal abstract class DevicesViewModel : LifeCycleTriggeredCollectionDisplayIt
 	/// Apparently IReadOnlyCollection of BT devices needs to be reread for whatever reason
 	/// </summary>
 	private protected abstract void UpdateFromSource();
-}
-
-
-internal abstract class LifeCycleTriggeredCollectionDisplayItems : DisplayItemCollection
-{
-	protected internal abstract void PopulateCollection(string caller, EventArgs eventArgs);
-}
-
-
-internal static class LifeCycleTriggeredCollectionExtensions
-{
-	/// <summary>
-	/// Allows fluent instantiation of a new window/page/viewModel
-	/// </summary>
-	/// <param name="window">Activated window</param>
-	/// <param name="viewModel">Collection View Model in need of the window trigger re-population</param>
-	/// <returns></returns>
-	internal static Window EnableUpdateOnWindowActivation(this Window window, LifeCycleTriggeredCollectionDisplayItems viewModel)
-	{
-		window.Activated += (_, eventArgs) => viewModel.PopulateCollection(nameof(window.Activated), eventArgs);
-		return window;
-	}
 }

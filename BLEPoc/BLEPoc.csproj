@@ -70,6 +70,14 @@
     <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidResource Remove="Ble\**" />
+    <Compile Remove="Ble\**" />
+    <EmbeddedResource Remove="Ble\**" />
+    <MauiCss Remove="Ble\**" />
+    <MauiXaml Remove="Ble\**" />
+    <None Remove="Ble\**" />
+  </ItemGroup>
+  <ItemGroup>
     <MauiFont Remove="Resources\Fonts\OpenSans-Regular.ttf" />
     <MauiFont Remove="Resources\Fonts\OpenSansSemibold.ttf" />
   </ItemGroup>
@@ -89,9 +97,6 @@
     <Compile Update="Ui\Pages\Tests\SecondPage.xaml.cs">
       <DependentUpon>SecondPage.xaml</DependentUpon>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Ble\" />
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>

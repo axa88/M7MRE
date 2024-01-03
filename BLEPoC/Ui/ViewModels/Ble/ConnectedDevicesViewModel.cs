@@ -1,6 +1,8 @@
-﻿namespace BLEPoC.Ui.ViewModels.Ble;
+﻿using BLEPoC.Ui.Models.Collection.Items;
 
-internal class ConnectedDevicesViewModel : DevicesViewModel
+namespace BLEPoC.Ui.ViewModels.Ble;
+
+internal class ConnectedDevicesViewModel<T> : DevicesViewModel<T> where T : ICollectionItem, new()
 {
 	internal ConnectedDevicesViewModel()
 	{

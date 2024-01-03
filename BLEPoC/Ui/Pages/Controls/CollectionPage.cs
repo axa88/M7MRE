@@ -3,6 +3,7 @@ using Android.Widget;
 #endif
 
 using BLEPoC.Ui.Models.Collection;
+using BLEPoC.Ui.Models.Collection.Items;
 
 using static Microsoft.Maui.Controls.VisualStateManager;
 
@@ -11,16 +12,16 @@ using Button = Microsoft.Maui.Controls.Button;
 
 namespace BLEPoC.Ui.Pages.Controls;
 
-internal class CollectionPage : ContentPage
+internal class CollectionPage<T> : ContentPage where T : ICollectionItem
 {
-	internal CollectionPage(DisplayItemCollection displayItemCollection)
+	internal CollectionPage(ItemCollection<T> itemCollection)
 	{
 		//Button testButton = new() { Text = "test-button" };
-		//Grid grid = new() { Margin = 20, Children = { new StackLayout { Children = { testButton, new CollectionViewCustom(displayItemCollection) } } } };
+		//Grid grid = new() { Margin = 20, Children = { new StackLayout { Children = { testButton, new CollectionViewCustom(itemCollection) } } } };
 
-		Grid grid = new() { Margin = 20, Children = { new CollectionViewCustom(displayItemCollection) } };
+		Grid grid = new() { Margin = 20, Children = { new CollectionViewCustom<T>(itemCollection) } };
 		Content = grid;
-		//BindingContext = displayItemCollection;
+		//BindingContext = itemCollection;
 
 		// ReSharper disable once UnusedParameter.Local
 		Microsoft.Maui.Handlers.PickerHandler.Mapper.AppendToMapping("MyCustomization", (handler, view) =>

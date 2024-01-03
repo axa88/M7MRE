@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
 
-namespace BLEPoC.Ui.Models.DisplayItems;
+namespace BLEPoC.Ui.Models.Collection.Items;
 
 internal class TextIo : CollectionItem, INotifyPropertyChanged
 {

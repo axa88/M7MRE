@@ -1,4 +1,5 @@
 ﻿using BLEPoC.Permissions;
+using BLEPoC.Ui.Models.Collection.Items;
 using BLEPoC.Ui.Pages.Basic;
 using BLEPoC.Ui.Pages.Ble;
 using BLEPoC.Ui.Pages.Controls;
@@ -34,10 +35,10 @@ internal class SelectorPage : PermissionsEnabledContentPage
 		flyoutPageButton.Clicked += (_, _) => Application.Current?.OpenWindow(new WindowCustom(new FlyoutPageCustom(), "FlyWin #0")); // test FlyoutPage using ContentPages for the Flyout and Detail pages
 
 		Button collectionButton = new() { Text = "Collection" };
-		collectionButton.Clicked += (_, _) => Application.Current?.OpenWindow(new WindowCustom(new CollectionPage(new TestControlsCollectionViewModel())));
+		collectionButton.Clicked += (_, _) => Application.Current?.OpenWindow(new WindowCustom(new CollectionPage<CollectionItem>(new TestControlsCollectionViewModel<CollectionItem>())));
 
 		Button bleButton = new() { Text = "Ble" };
-		bleButton.Clicked += (_, _) => Application.Current?.OpenWindow(new WindowCustom(new BleStatusPage(), "Ble #0"));
+		bleButton.Clicked += (_, _) => Application.Current?.OpenWindow(new WindowCustom(new BleStatusPage<CollectionItem>(), "Ble #0"));
 		bleButton.IsEnabled = PermissionsProcessor.Instance.PermissionGranted;
 		PermissionsProcessor.Instance.PermissionsChanged += (_, permissionEventArgs) => bleButton.IsEnabled = permissionEventArgs.PermissionGranted;
 

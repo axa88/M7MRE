@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Globalization;
 
-using BLEPoC.Ui.Models.DisplayItems;
+using BLEPoC.Ui.Models.Collection.Items;
 
 using Button = Microsoft.Maui.Controls.Button;
 using Switch = Microsoft.Maui.Controls.Switch;
@@ -11,14 +11,14 @@ using TimePicker = Microsoft.Maui.Controls.TimePicker;
 
 namespace BLEPoC.Ui.Models.Collection;
 
-internal class CollectionViewCustom : CollectionView
+internal class CollectionViewCustom<T> : CollectionView where T : ICollectionItem
 {
-	internal CollectionViewCustom(DisplayItemCollection bindingContext)
+	internal CollectionViewCustom(ItemCollection<T> bindingContext)
 	{
 		BindingContext = bindingContext;
-		SetBinding(ItemsSourceProperty, new Binding(nameof(DisplayItemCollection.Items)));
+		SetBinding(ItemsSourceProperty, new Binding(nameof(ItemCollection<T>.Items)));
 
-		ItemTemplate = new DisplayItemDataTemplateSelector();
+		ItemTemplate = new CollectionItemDataTemplateSelector<T>();
 		ItemsLayout = new LinearItemsLayout(ItemsLayoutOrientation.Vertical) { ItemSpacing = 2 };
 
 		#pragma warning disable CS0618 // Type or member is obsolete
@@ -37,34 +37,34 @@ internal class CollectionViewCustom : CollectionView
 }
 
 
-internal class DisplayItemDataTemplateSelector : DataTemplateSelector
+internal class CollectionItemDataTemplateSelector<T> : DataTemplateSelector where T : ICollectionItem
 {
-	private DisplayItemTemplateFolder DisplayItemTemplateFolder { get; } = new();
-	private DisplayItemTemplateBinary DisplayItemTemplateBinary { get; } = new();
-	private DisplayItemTemplateMulti DisplayItemTemplateMulti { get; } = new();
-	private DisplayItemTemplateTime DisplayItemTemplateTime { get; } = new();
-	private DisplayItemTemplateDigits DisplayItemTemplateDigits { get; } = new();
-	private DisplayItemTemplateEntry DisplayItemTemplateEntry { get; } = new();
+	private ItemTemplateSummary ItemTemplateSummary { get; } = new();
+	private ItemTemplateBinary ItemTemplateBinary { get; } = new();
+	private ItemTemplateMulti<T> ItemTemplateMulti { get; } = new();
+	private ItemTemplateTime ItemTemplateTime { get; } = new();
+	private ItemTemplateDigits ItemTemplateDigits { get; } = new();
+	private ItemTemplateEntry ItemTemplateEntry { get; } = new();
 
 	protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
 	{
 		return item switch
 		{
-			Summary => DisplayItemTemplateFolder,
-			BinaryIo => DisplayItemTemplateBinary,
-			MultiIo => DisplayItemTemplateMulti,
-			TimeIo => DisplayItemTemplateTime,
-			DigitIo => DisplayItemTemplateDigits,
-			TextIo => DisplayItemTemplateEntry,
-			_ => throw new NotImplementedException(nameof(DisplayItemDataTemplateSelector))
+			BinaryIo => ItemTemplateBinary,
+			MultiIo<T> => ItemTemplateMulti,
+			TimeIo => ItemTemplateTime,
+			DigitIo => ItemTemplateDigits,
+			TextIo => ItemTemplateEntry,
+			Summary => ItemTemplateSummary,
+			_ => throw new NotImplementedException(nameof(CollectionItemDataTemplateSelector<T>))
 		};
 	}
 }
 
 
-internal class DisplayItemTemplateFolder : DataTemplate
+internal class ItemTemplateSummary : DataTemplate
 {
-	internal DisplayItemTemplateFolder()
+	internal ItemTemplateSummary()
 	{
 		LoadTemplate = () =>
 		{
@@ -78,9 +78,9 @@ internal class DisplayItemTemplateFolder : DataTemplate
 }
 
 
-internal class DisplayItemTemplateBinary : DataTemplate
+internal class ItemTemplateBinary : DataTemplate
 {
-	internal DisplayItemTemplateBinary()
+	internal ItemTemplateBinary()
 	{
 		LoadTemplate = () =>
 		{
@@ -95,16 +95,16 @@ internal class DisplayItemTemplateBinary : DataTemplate
 }
 
 
-internal class DisplayItemTemplateMulti : DataTemplate
+internal class ItemTemplateMulti<T> : DataTemplate where T : ICollectionItem
 {
-	internal DisplayItemTemplateMulti()
+	internal ItemTemplateMulti()
 	{
 		LoadTemplate = () =>
 		{
 			Picker picker = new() { Margin = new Thickness(10), Title = "Picker Title" };
-			picker.SetBinding(Picker.ItemsSourceProperty, nameof(MultiIo.AvailableItems)); // items available for selection
-			picker.ItemDisplayBinding = new Binding(nameof(ICollectionItem.Primary)); // display selected
-			picker.SetBinding(Picker.SelectedItemProperty, nameof(MultiIo.SelectedItem)); // act upon and store when selected changes
+			picker.SetBinding(Picker.ItemsSourceProperty, nameof(MultiIo<T>.AvailableItems)); // items available for selection
+			picker.ItemDisplayBinding = new Binding(nameof(MultiIo<T>.Primary)); // display selected
+			picker.SetBinding(Picker.SelectedItemProperty, nameof(MultiIo<T>.SelectedItem)); // act upon and store when selected changes
 
 			VerticalStackLayout horizontalStackLayoutOuter = new() { Children = { new TextLayout(), picker } };
 
@@ -114,9 +114,9 @@ internal class DisplayItemTemplateMulti : DataTemplate
 }
 
 
-internal class DisplayItemTemplateTime : DataTemplate
+internal class ItemTemplateTime : DataTemplate
 {
-	internal DisplayItemTemplateTime()
+	internal ItemTemplateTime()
 	{
 		LoadTemplate = () =>
 		{
@@ -135,9 +135,9 @@ internal class DisplayItemTemplateTime : DataTemplate
 }
 
 
-internal class DisplayItemTemplateDigits : DataTemplate
+internal class ItemTemplateDigits : DataTemplate
 {
-	internal DisplayItemTemplateDigits()
+	internal ItemTemplateDigits()
 	{
 		LoadTemplate = () =>
 		{
@@ -191,9 +191,9 @@ internal class DisplayItemTemplateDigits : DataTemplate
 }
 
 
-internal class DisplayItemTemplateEntry : DataTemplate
+internal class ItemTemplateEntry : DataTemplate
 {
-	internal DisplayItemTemplateEntry()
+	internal ItemTemplateEntry()
 	{
 		LoadTemplate = () =>
 		{

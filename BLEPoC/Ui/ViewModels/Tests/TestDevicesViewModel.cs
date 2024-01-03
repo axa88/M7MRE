@@ -1,10 +1,10 @@
-﻿using BLEPoC.Ui.Models.DisplayItems;
+﻿using BLEPoC.Ui.Models.Collection.Items;
 using BLEPoC.Ui.ViewModels.Ble;
 
 
 namespace BLEPoC.Ui.ViewModels.Tests;
 
-internal class TestDevicesViewModel : DevicesViewModel
+internal class TestDevicesViewModel<T> : DevicesViewModel<T> where T : ICollectionItem, new()
 {
 	private readonly List<(string, string)> _devices;
 	private readonly Timer _collectionUpdateTimer;
@@ -33,7 +33,7 @@ internal class TestDevicesViewModel : DevicesViewModel
 			Random rnd = new();
 			var enumerable = _devices.OrderBy(_ => rnd.Next()).Take(3);
 			foreach (var valueTuple in enumerable)
-				Items.Add(new Summary { Primary = valueTuple.Item1, Secondary = valueTuple.Item2 });
+				Items.Add((T)(ICollectionItem)new Summary { Primary = valueTuple.Item1, Secondary = valueTuple.Item2 });
 		});
 
 		_collectionUpdateTimer.Change(TimeSpan.FromSeconds(5), Timeout.InfiniteTimeSpan);
