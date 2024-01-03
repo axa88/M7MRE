@@ -5,7 +5,7 @@ using System.Windows.Input;
 
 namespace BLEPoC.Ui.Models.DisplayItems;
 
-internal class DigitIo : DisplayItem, INotifyPropertyChanged
+internal class DigitIo : CollectionItem, INotifyPropertyChanged
 {
 	private const int _maxDigits = 6;
 	private readonly int _base;

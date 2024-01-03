@@ -10,9 +10,9 @@ using BLEPoC.Ui.Models.DisplayItems;
 
 namespace BLEPoC.Ui.ViewModels.Tests;
 
-internal class TestControlsCollectionViewModel : CollectionViewModel, INotifyPropertyChanged
+internal class TestControlsCollectionViewModel : DisplayItemCollection, INotifyPropertyChanged
 {
-	private readonly List<IDisplayItem> _displayItems = [];
+	private readonly List<ICollectionItem> _displayItems = [];
 	private int _selectionCount = 1;
 
 	internal TestControlsCollectionViewModel()
@@ -20,7 +20,7 @@ internal class TestControlsCollectionViewModel : CollectionViewModel, INotifyPro
 		CreateFakeItems(); // mock data
 	}
 
-	public IDisplayItem SelectedDisplayItem { get; set; }
+	public ICollectionItem SelectedCollectionItem { get; set; }
 
 	// ReSharper disable MemberCanBePrivate.Global
 	public ObservableCollection<object> SelectedMonkeys { get; set; }
@@ -30,7 +30,7 @@ internal class TestControlsCollectionViewModel : CollectionViewModel, INotifyPro
 
 	public ICommand FilterCommand => new Command<string>(FilterItems);
 	public ICommand MonkeySelectionChangedCommand => new Command(MonkeySelectionChanged);
-	public ICommand DeleteCommand => new Command<IDisplayItem>(RemoveMonkey);
+	public ICommand DeleteCommand => new Command<ICollectionItem>(RemoveMonkey);
 
 	private void CreateFakeItems()
 	{
@@ -38,8 +38,8 @@ internal class TestControlsCollectionViewModel : CollectionViewModel, INotifyPro
 
 		_displayItems.Add(new BinaryIo { Primary = "binary", Secondary = "Central & South America", ItemCommand = new Command<object>(SumFuc) });
 
-		var defaultMultiItem = new DisplayItem {Primary = "teo"};
-		var listItems = new List<IDisplayItem> { new DisplayItem { Primary = "one" }, defaultMultiItem, new DisplayItem { Primary = "tree" }, };
+		var defaultMultiItem = new CollectionItem {Primary = "teo"};
+		var listItems = new List<ICollectionItem> { new CollectionItem { Primary = "one" }, defaultMultiItem, new CollectionItem { Primary = "tree" }, };
 		_displayItems.Add(new MultiIo(listItems) { Primary = "Blue Monkey", Secondary = "Central and East Africa", SelectedItem = defaultMultiItem, ItemCommand = new Command<object>(SumFuc) });
 
 		_displayItems.Add(new TimeIo { Primary = "Squirrel Monkey", Secondary = "Central & South America", ItemCommand = new Command<object>(SumFuc), Time = new TimeSpan(0, 8, 3) });
@@ -57,7 +57,7 @@ internal class TestControlsCollectionViewModel : CollectionViewModel, INotifyPro
 		_displayItems.Add(new DigitIo(4, "B") { Primary = "built in binary", Value = 0b_1100, ItemCommand = new Command<object>(SumFuc)});
 		_displayItems.Add(new DigitIo(4, "D") { Primary = "built in whole", Value = 1234, ItemCommand = new Command<object>(SumFuc)});
 
-		Items = new ObservableCollection<IDisplayItem>(_displayItems);
+		Items = new ObservableCollection<ICollectionItem>(_displayItems);
 	}
 
 	private static void SumFuc(object b) { Trace.WriteLine($"sum fuc is {b}"); }
@@ -76,12 +76,12 @@ internal class TestControlsCollectionViewModel : CollectionViewModel, INotifyPro
 
 	private void MonkeySelectionChanged()
 	{
-		SelectedMonkeyMessage = $"Selection {_selectionCount}: {SelectedDisplayItem.Primary}";
+		SelectedMonkeyMessage = $"Selection {_selectionCount}: {SelectedCollectionItem.Primary}";
 		OnPropertyChanged(nameof(SelectedMonkeyMessage));
 		_selectionCount++;
 	}
 
-	private void RemoveMonkey(IDisplayItem displayItem) => Items.Remove(displayItem);
+	private void RemoveMonkey(ICollectionItem collectionItem) => Items.Remove(collectionItem);
 
 	#region INotifyPropertyChanged
 

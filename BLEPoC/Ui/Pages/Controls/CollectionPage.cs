@@ -13,11 +13,14 @@ namespace BLEPoC.Ui.Pages.Controls;
 
 internal class CollectionPage : ContentPage
 {
-	internal CollectionPage(CollectionViewModel collectionViewModel)
+	internal CollectionPage(DisplayItemCollection displayItemCollection)
 	{
-		Grid grid = new() { Margin = 20, Children = { new CollectionViewCustom(collectionViewModel) } };
+		//Button testButton = new() { Text = "test-button" };
+		//Grid grid = new() { Margin = 20, Children = { new StackLayout { Children = { testButton, new CollectionViewCustom(displayItemCollection) } } } };
+
+		Grid grid = new() { Margin = 20, Children = { new CollectionViewCustom(displayItemCollection) } };
 		Content = grid;
-		//BindingContext = collectionViewModel;
+		//BindingContext = displayItemCollection;
 
 		// ReSharper disable once UnusedParameter.Local
 		Microsoft.Maui.Handlers.PickerHandler.Mapper.AppendToMapping("MyCustomization", (handler, view) =>

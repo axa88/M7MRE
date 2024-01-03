@@ -5,9 +5,9 @@ using BLEPoC.Ui.Models.DisplayItems;
 
 namespace BLEPoC.Ui.Models.Collection;
 
-internal abstract class CollectionViewModel
+internal abstract class DisplayItemCollection
 {
 	// ReSharper disable once MemberCanBeProtected.Global
 	// ReSharper disable once MemberCanBePrivate.Global
-	public ObservableCollection<IDisplayItem> Items { get; protected set; } = [];
+	public ObservableCollection<ICollectionItem> Items { get; protected set; } = [];
 }

@@ -1,19 +1,19 @@
 ﻿namespace BLEPoC.Ui.Models.DisplayItems;
 
-internal class MultiIo : DisplayItem
+internal class MultiIo : CollectionItem
 {
-	private IDisplayItem _selectedItem;
+	private ICollectionItem _selectedItem;
 
-	internal MultiIo(IList<IDisplayItem> listItems)
+	internal MultiIo(IList<ICollectionItem> listItems)
 	{
 		if (listItems == null || !listItems.Any())
 			throw new ArgumentNullException(nameof(listItems));
 
 		AvailableItems = listItems;
 	}
-	public IList<IDisplayItem> AvailableItems { get; set; }
+	public IList<ICollectionItem> AvailableItems { get; set; }
 
-	public IDisplayItem SelectedItem
+	public ICollectionItem SelectedItem
 	{
 		get => _selectedItem;
 		set

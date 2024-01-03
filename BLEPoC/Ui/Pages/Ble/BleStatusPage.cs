@@ -1,10 +1,8 @@
-﻿using BLEPoC.Ui.Pages.Controls;
+﻿using BLEPoC.Ui.Models;
+using BLEPoC.Ui.Pages.Controls;
 using BLEPoC.Ui.Pages.Permissions;
 using BLEPoC.Ui.ViewModels.Ble;
-using BLEPoC.Ui.ViewModels.Tests;
 using BLEPoC.Utility;
-
-using Microsoft.Maui.Controls.Shapes;
 
 
 namespace BLEPoC.Ui.Pages.Ble;
@@ -39,31 +37,26 @@ internal class BleStatusPage : PermissionsEnabledContentPage
 		supportsExtendedAdvertisingLabel.SetBinding(Label.TextProperty, nameof(bleVm.BleSupportsExtendedAdvertising));
 		var supportsExtendedAdvertisingBorder = new OuterBorder(supportsExtendedAdvertisingLabel);
 
-		Button testCollectionButton = new() { Text = "test Devices" };
-		testCollectionButton.Clicked += (_, _) => Application.Current?.OpenWindow(new WindowCustom(new CollectionPage(new TestDevicesViewModel())));
+		//Button testCollectionButton = new() { Text = "test Devices" };
+		//testCollectionButton.Clicked += (_, _) => Application.Current?.OpenWindow(new WindowCustom(new CollectionPage(new TestDevicesViewModel())));
 
 		Button bondedDeviceButton = new() { Text = "Bonded Devices" };
-		bondedDeviceButton.Clicked += (_, _) => Application.Current?.OpenWindow(new WindowCustom(new CollectionPage(new BondedDevicesViewModel())));
+		bondedDeviceButton.Clicked += (_, _) =>
+		{
+			BondedDevicesViewModel bondedDevicesViewModel = new();
+			Application.Current?.OpenWindow(new WindowCustom(new CollectionPage(bondedDevicesViewModel)).EnableUpdateOnWindowActivation(bondedDevicesViewModel));
+		};
 
 		Button connectedDeviceButton = new() { Text = "Connected Devices" };
-		connectedDeviceButton.Clicked += (_, _) => Application.Current?.OpenWindow(new WindowCustom(new CollectionPage(new ConnectedDevicesViewModel())));
+		connectedDeviceButton.Clicked += (_, _) =>
+		{
+			ConnectedDevicesViewModel connectedDevicesViewModel = new();
+			Application.Current?.OpenWindow(new WindowCustom(new CollectionPage(connectedDevicesViewModel)).EnableUpdateOnWindowActivation(connectedDevicesViewModel));
+		};
 
-		var verticalStack = new VerticalStackLayout { Children = { isAvailableBorder , isOnBorder, stateBorder, supportsCodedPhyBorder, supportsExtendedAdvertisingBorder, bondedDeviceButton, connectedDeviceButton, testCollectionButton } };
+		var verticalStack = new VerticalStackLayout { Children = { isAvailableBorder , isOnBorder, stateBorder, supportsCodedPhyBorder, supportsExtendedAdvertisingBorder, bondedDeviceButton, connectedDeviceButton/*, testCollectionButton*/ } };
 		//var outerBorder = new OuterBorder(verticalStack);
 
 		Content = verticalStack;
-	}
-}
-
-
-internal class OuterBorder : Border
-{
-	internal OuterBorder(View content)
-	{
-		BackgroundColor = Colors.Transparent;
-		Padding = new Thickness(20);
-		StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(15, 0, 0, 10) };
-		Stroke = new LinearGradientBrush { EndPoint = new Point(0, 1), GradientStops = [new() { Color = Colors.Orange, Offset = 0.1f }, new() { Color = Colors.Brown, Offset = 1.0f }] };
-		Content = content;
 	}
 }

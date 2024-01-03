@@ -83,7 +83,10 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Ui\Pages\Basic\SecondPage.xaml.cs">
+    <Compile Update="Ui\Pages\Tests\FirstPage.xaml.cs">
+      <DependentUpon>FirstPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Ui\Pages\Tests\SecondPage.xaml.cs">
       <DependentUpon>SecondPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>

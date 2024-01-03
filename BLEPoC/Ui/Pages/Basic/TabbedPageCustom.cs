@@ -1,4 +1,5 @@
-﻿using BLEPoC.Utility;
+﻿using BLEPoC.Ui.Pages.Tests;
+using BLEPoC.Utility;
 
 using static System.Reflection.MethodBase;
 
@@ -10,7 +11,7 @@ internal class TabbedPageCustom : TabbedPage
     internal TabbedPageCustom(string title = null)
     {
 		_ = new LifeCycleTracing(this, title);
-		Children.Add(new MainPage(new SecondPage(true, true, "TPage #2"), true, true, "TPage #0"));
+		Children.Add(new FirstPage(new SecondPage(true, true, "TPage #2"), true, true, "TPage #0"));
     }
 
 	internal event EventHandler<TraceEventArgs> BackButtonPressing;

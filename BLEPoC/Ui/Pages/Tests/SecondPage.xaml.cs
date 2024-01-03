@@ -3,7 +3,7 @@ using BLEPoC.Ui.Pages.Permissions;
 using BLEPoC.Utility;
 
 
-namespace BLEPoC.Ui.Pages.Basic;
+namespace BLEPoC.Ui.Pages.Tests;
 
 public partial class SecondPage : PermissionsEnabledContentPage
 {

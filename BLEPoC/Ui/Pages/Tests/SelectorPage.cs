@@ -1,4 +1,5 @@
 ﻿using BLEPoC.Permissions;
+using BLEPoC.Ui.Pages.Basic;
 using BLEPoC.Ui.Pages.Ble;
 using BLEPoC.Ui.Pages.Controls;
 using BLEPoC.Ui.Pages.Permissions;
@@ -6,7 +7,7 @@ using BLEPoC.Ui.ViewModels.Tests;
 using BLEPoC.Utility;
 
 
-namespace BLEPoC.Ui.Pages.Basic;
+namespace BLEPoC.Ui.Pages.Tests;
 
 internal class SelectorPage : PermissionsEnabledContentPage
 {
@@ -15,7 +16,7 @@ internal class SelectorPage : PermissionsEnabledContentPage
 		Button contentWindowButton = new() { Text = "Content Page Windows" };
 		contentWindowButton.Clicked += (_, _) =>
 		{
-			Application.Current?.OpenWindow(new WindowCustom(new MainPage(null, true, true, "CPage #0"), "MultiWin #0"));
+			Application.Current?.OpenWindow(new WindowCustom(new FirstPage(null, true, true, "CPage #0"), "MultiWin #0"));
 			Application.Current?.OpenWindow(new WindowCustom(new SecondPage(true, true, "CPage #2"), "MultiWin #2"));
 
 		}; // test multi window using 2 windows with ContentPages

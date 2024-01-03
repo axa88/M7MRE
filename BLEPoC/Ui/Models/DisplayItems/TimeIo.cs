@@ -1,6 +1,6 @@
 ﻿namespace BLEPoC.Ui.Models.DisplayItems;
 
-internal class TimeIo : DisplayItem
+internal class TimeIo : CollectionItem
 {
 	private TimeSpan _time;
 

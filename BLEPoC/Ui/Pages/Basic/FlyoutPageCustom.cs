@@ -1,4 +1,5 @@
-﻿using BLEPoC.Utility;
+﻿using BLEPoC.Ui.Pages.Tests;
+using BLEPoC.Utility;
 
 using static System.Reflection.MethodBase;
 
@@ -11,7 +12,7 @@ internal class FlyoutPageCustom : FlyoutPage
 	{
 		_ = new LifeCycleTracing(this, title);
 
-		Flyout = new MainPage(null, true, true, $"Flyout({title})");
+		Flyout = new FirstPage(null, true, true, $"Flyout({title})");
 		Detail = new SecondPage(true, true, $"Detail({title})");
 
 		PropertyChanged += (_, propertyChangedEventHandler) =>

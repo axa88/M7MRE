@@ -14,15 +14,14 @@ public static class MauiProgram
 	public static MauiApp CreateMauiApp()
 	{
 		var builder = MauiApp.CreateBuilder();
-		builder
-			.UseMauiApp<App>()
-			.ConfigureFonts(fonts =>
-			{
-				fonts.AddFont("OpenSans-Regular.ttf", "OpenSans-Regular");
-				// ReSharper disable StringLiteralTypo
-				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-				// ReSharper restore StringLiteralTypo
-			});
+		builder.UseMauiApp<App>()
+				.ConfigureFonts(fonts =>
+				{
+					fonts.AddFont("OpenSans-Regular.ttf", "OpenSans-Regular");
+					// ReSharper disable StringLiteralTypo
+					fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+					// ReSharper restore StringLiteralTypo
+				});
 
 	#if ANDROID
 		builder.ConfigureLifecycleEvents(lifecycleBuilder => lifecycleBuilder.AddAndroid(androidLifecycleBuilder => androidLifecycleBuilder.OnDestroy(activity => PermissionsProcessor.Instance.OnWindowDestroying(activity))));

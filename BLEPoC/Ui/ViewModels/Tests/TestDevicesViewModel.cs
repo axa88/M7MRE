@@ -23,7 +23,7 @@ internal class TestDevicesViewModel : DevicesViewModel
 		Items.CollectionChanged += ItemsCollectionChanged;
 	}
 
-	private new async void Populate()
+	private async void Populate()
 	{
 		await MainThread.InvokeOnMainThreadAsync(() =>
 		{
@@ -38,6 +38,8 @@ internal class TestDevicesViewModel : DevicesViewModel
 
 		_collectionUpdateTimer.Change(TimeSpan.FromSeconds(5), Timeout.InfiniteTimeSpan);
 	}
+
+	private protected override void UpdateFromSource() { throw new NotImplementedException(); }
 
 	private void ItemsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
 	{

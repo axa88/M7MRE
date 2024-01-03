@@ -4,8 +4,6 @@ using System.Globalization;
 
 using BLEPoC.Ui.Models.DisplayItems;
 
-using Microsoft.Maui.Controls.Shapes;
-
 using Button = Microsoft.Maui.Controls.Button;
 using Switch = Microsoft.Maui.Controls.Switch;
 using TimePicker = Microsoft.Maui.Controls.TimePicker;
@@ -15,14 +13,17 @@ namespace BLEPoC.Ui.Models.Collection;
 
 internal class CollectionViewCustom : CollectionView
 {
-	internal CollectionViewCustom(CollectionViewModel bindingContextViewModel)
+	internal CollectionViewCustom(DisplayItemCollection bindingContext)
 	{
-		BindingContext = bindingContextViewModel;
-		SetBinding(ItemsSourceProperty, new Binding(nameof(CollectionViewModel.Items)));
+		BindingContext = bindingContext;
+		SetBinding(ItemsSourceProperty, new Binding(nameof(DisplayItemCollection.Items)));
 
 		ItemTemplate = new DisplayItemDataTemplateSelector();
-
 		ItemsLayout = new LinearItemsLayout(ItemsLayoutOrientation.Vertical) { ItemSpacing = 2 };
+
+		#pragma warning disable CS0618 // Type or member is obsolete
+		VerticalOptions = LayoutOptions.FillAndExpand; // fixes scrolling problem
+		#pragma warning restore CS0618 // Type or member is obsolete
 		VerticalScrollBarVisibility = ScrollBarVisibility.Always;
 		SelectionMode = SelectionMode.Single;
 		SelectionChanged += (_, selectionChangedEventArgs) =>
@@ -49,12 +50,12 @@ internal class DisplayItemDataTemplateSelector : DataTemplateSelector
 	{
 		return item switch
 		{
-			Summary _ => DisplayItemTemplateFolder,
-			BinaryIo _ => DisplayItemTemplateBinary,
-			MultiIo _ => DisplayItemTemplateMulti,
-			TimeIo _ => DisplayItemTemplateTime,
-			DigitIo _ => DisplayItemTemplateDigits,
-			TextIo _ => DisplayItemTemplateEntry,
+			Summary => DisplayItemTemplateFolder,
+			BinaryIo => DisplayItemTemplateBinary,
+			MultiIo => DisplayItemTemplateMulti,
+			TimeIo => DisplayItemTemplateTime,
+			DigitIo => DisplayItemTemplateDigits,
+			TextIo => DisplayItemTemplateEntry,
 			_ => throw new NotImplementedException(nameof(DisplayItemDataTemplateSelector))
 		};
 	}
@@ -69,7 +70,7 @@ internal class DisplayItemTemplateFolder : DataTemplate
 		{
 			var outerBorder = new OuterBorder(new TextLayout());
 			var tapGestureRecognizer = new TapGestureRecognizer { NumberOfTapsRequired = 2 };
-			tapGestureRecognizer.SetBinding(TapGestureRecognizer.CommandProperty, nameof(IDisplayItem.ItemCommand));
+			tapGestureRecognizer.SetBinding(TapGestureRecognizer.CommandProperty, nameof(ICollectionItem.ItemCommand));
 			outerBorder.GestureRecognizers.Add(tapGestureRecognizer);
 			return outerBorder;
 		};
@@ -102,7 +103,7 @@ internal class DisplayItemTemplateMulti : DataTemplate
 		{
 			Picker picker = new() { Margin = new Thickness(10), Title = "Picker Title" };
 			picker.SetBinding(Picker.ItemsSourceProperty, nameof(MultiIo.AvailableItems)); // items available for selection
-			picker.ItemDisplayBinding = new Binding(nameof(IDisplayItem.Primary)); // display selected
+			picker.ItemDisplayBinding = new Binding(nameof(ICollectionItem.Primary)); // display selected
 			picker.SetBinding(Picker.SelectedItemProperty, nameof(MultiIo.SelectedItem)); // act upon and store when selected changes
 
 			VerticalStackLayout horizontalStackLayoutOuter = new() { Children = { new TextLayout(), picker } };
@@ -218,26 +219,13 @@ internal class TextLayout : VerticalStackLayout
 	internal TextLayout()
 	{
 		Label primaryLabel = new() { Margin = new Thickness(10), FontAttributes = FontAttributes.Bold, VerticalOptions = LayoutOptions.Center };
-		primaryLabel.SetBinding(Label.TextProperty, nameof(IDisplayItem.Primary));
+		primaryLabel.SetBinding(Label.TextProperty, nameof(ICollectionItem.Primary));
 
 		Label secondaryLabel = new() { Margin = new Thickness(10), VerticalOptions = LayoutOptions.Center };
-		secondaryLabel.SetBinding(Label.TextProperty, nameof(IDisplayItem.Secondary));
+		secondaryLabel.SetBinding(Label.TextProperty, nameof(ICollectionItem.Secondary));
 
 		Children.Add(primaryLabel);
 		Children.Add(secondaryLabel);
-	}
-}
-
-
-internal class OuterBorder : Border
-{
-	internal OuterBorder(View content)
-	{
-		BackgroundColor = Colors.Transparent;
-		Padding = new Thickness(10);
-		StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(15, 0, 0, 15) };
-		Stroke = new LinearGradientBrush { EndPoint = new Point(0, 1), GradientStops = [new() { Color = Colors.Orange, Offset = 0.1f }, new() { Color = Colors.Brown, Offset = 1.0f }] };
-		Content = content;
 	}
 }
 

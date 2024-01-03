@@ -1,6 +1,6 @@
 ﻿namespace BLEPoC.Ui.Models.DisplayItems
 {
-	internal interface IDisplayItem
+	internal interface ICollectionItem
 	{
 		public string Primary { get; set; }
 		public string Secondary { get; set; }
@@ -8,7 +8,7 @@
 	}
 
 
-	internal class DisplayItem : IDisplayItem
+	internal class CollectionItem : ICollectionItem
 	{
 		public string Primary { get; set; }
 		public string Secondary { get; set; }

@@ -5,7 +5,7 @@ using System.Windows.Input;
 
 namespace BLEPoC.Ui.Models.DisplayItems;
 
-internal class TextIo : DisplayItem, INotifyPropertyChanged
+internal class TextIo : CollectionItem, INotifyPropertyChanged
 {
 	private string _text;
 

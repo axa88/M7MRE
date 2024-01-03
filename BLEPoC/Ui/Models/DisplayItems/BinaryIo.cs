@@ -1,6 +1,6 @@
 ﻿namespace BLEPoC.Ui.Models.DisplayItems;
 
-internal class BinaryIo : DisplayItem
+internal class BinaryIo : CollectionItem
 {
 	private bool _isOn;
 

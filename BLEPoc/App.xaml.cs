@@ -1,4 +1,5 @@
 ﻿using BLEPoC.Ui.Pages.Basic;
+using BLEPoC.Ui.Pages.Tests;
 using BLEPoC.Utility;
 
 

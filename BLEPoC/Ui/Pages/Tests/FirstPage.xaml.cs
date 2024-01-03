@@ -2,14 +2,14 @@
 using BLEPoC.Utility;
 
 
-namespace BLEPoC.Ui.Pages.Basic;
+namespace BLEPoC.Ui.Pages.Tests;
 
-public partial class MainPage : PermissionsEnabledContentPage
+public partial class FirstPage : PermissionsEnabledContentPage
 {
 	private int _count;
 	private readonly Page _secondPage;
 
-	public MainPage(Page secondPage, bool checkPermissionsOnStart, bool checkPermissionsOnResumed, string title = "") : base(checkPermissionsOnStart, checkPermissionsOnResumed)
+	public FirstPage(Page secondPage, bool checkPermissionsOnStart, bool checkPermissionsOnResumed, string title = "") : base(checkPermissionsOnStart, checkPermissionsOnResumed)
 	{
 		_secondPage = secondPage;
 		_ = new LifeCycleTracing(this, title);
