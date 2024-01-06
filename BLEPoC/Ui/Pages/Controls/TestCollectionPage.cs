@@ -7,15 +7,26 @@ using BLEPoC.Ui.Models.Collection.Items;
 
 using static Microsoft.Maui.Controls.VisualStateManager;
 
+using Button = Microsoft.Maui.Controls.Button;
+
 
 namespace BLEPoC.Ui.Pages.Controls;
 
-internal class CollectionPage<T> : ContentPage where T : ICollectionItem
+internal class TestCollectionPage<T> : ContentPage where T : ICollectionItem, new()
 {
-	internal CollectionPage(ItemCollection<T> itemCollection)
+	internal TestCollectionPage(ItemCollection<T> itemCollection, Action buttonAction = null)
 	{
-		Grid grid = new() { Margin = 20, Children = { new CollectionViewCustom<T>(itemCollection) } };
-		Content = grid;
+		var stackLayout = new StackLayout();
+
+		if (buttonAction != null)
+		{
+			Button pageButton = new() { Text = "Push Page" };
+			pageButton.Clicked += (_, _) => buttonAction();
+			stackLayout.Add(pageButton);
+		}
+
+		stackLayout.Children.Add(new CollectionViewCustom<T>(itemCollection));
+		Content = new Grid { Margin = 20, Children = { stackLayout } };
 		//BindingContext = itemCollection;
 
 		// ReSharper disable once UnusedParameter.Local

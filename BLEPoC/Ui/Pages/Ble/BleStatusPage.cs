@@ -10,7 +10,7 @@ using BLEPoC.Utility;
 
 namespace BLEPoC.Ui.Pages.Ble;
 
-internal class BleStatusPage<T> : PermissionsEnabledContentPage where T : CollectionItem, new()
+internal class BleStatusPage : PermissionsEnabledContentPage
 {
     internal BleStatusPage() : base(true, true)
     {
@@ -41,20 +41,20 @@ internal class BleStatusPage<T> : PermissionsEnabledContentPage where T : Collec
         var supportsExtendedAdvertisingBorder = new OuterBorder(supportsExtendedAdvertisingLabel);
 
         Button testCollectionButton = new() { Text = "test Devices" };
-        testCollectionButton.Clicked += (_, _) => Application.Current?.OpenWindow(new WindowCustom(new CollectionPage<T>(new TestDevicesViewModel<T>())));
+        testCollectionButton.Clicked += (_, _) => Application.Current?.OpenWindow(new WindowCustom(new CollectionPage<CollectionItem>(new TestUpdatingViewModel<CollectionItem>())));
 
         Button bondedDeviceButton = new() { Text = "Bonded Devices" };
         bondedDeviceButton.Clicked += (_, _) =>
 		{
-			BondedDevicesViewModel<T> bondedDevicesViewModel = new();
-            Application.Current?.OpenWindow(new WindowCustom(new CollectionPage<T>(bondedDevicesViewModel)).EnableUpdateOnWindowActivation(bondedDevicesViewModel.PopulateCollection));
+			BondedBtDeviceCollectionViewModel<CollectionItem> bondedBtDeviceCollectionViewModel = new();
+            Application.Current?.OpenWindow(new WindowCustom(new CollectionPage<CollectionItem>(bondedBtDeviceCollectionViewModel)).EnableUpdateOnWindowActivation(bondedBtDeviceCollectionViewModel.RequestCollectionUpdate));
         };
 
         Button connectedDeviceButton = new() { Text = "Connected Devices" };
         connectedDeviceButton.Clicked += (_, _) =>
         {
-            ConnectedDevicesViewModel<T> connectedDevicesViewModel = new();
-            Application.Current?.OpenWindow(new WindowCustom(new CollectionPage<T>(connectedDevicesViewModel)).EnableUpdateOnWindowActivation(connectedDevicesViewModel.PopulateCollection));
+            ConnectedBtDeviceCollectionViewModel<CollectionItem> connectedBtDeviceCollectionViewModel = new();
+            Application.Current?.OpenWindow(new WindowCustom(new CollectionPage<CollectionItem>(connectedBtDeviceCollectionViewModel)).EnableUpdateOnWindowActivation(connectedBtDeviceCollectionViewModel.RequestCollectionUpdate));
         };
 
         var verticalStack = new VerticalStackLayout { Children = { isAvailableBorder, isOnBorder, stateBorder, supportsCodedPhyBorder, supportsExtendedAdvertisingBorder, bondedDeviceButton, connectedDeviceButton, testCollectionButton } };

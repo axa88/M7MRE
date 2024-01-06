@@ -1,15 +1,15 @@
-﻿using BLEPoC.Ui.Models.Collection.Items;
-using BLEPoC.Ui.ViewModels.Ble;
+﻿using BLEPoC.Ui.Models.Collection;
+using BLEPoC.Ui.Models.Collection.Items;
 
 
 namespace BLEPoC.Ui.ViewModels.Tests;
 
-internal class TestDevicesViewModel<T> : DevicesViewModel<T> where T : ICollectionItem, new()
+internal class TestUpdatingViewModel<T> : ItemCollection<T> where T : ICollectionItem, new()
 {
 	private readonly List<(string, string)> _devices;
 	private readonly Timer _collectionUpdateTimer;
 
-	internal TestDevicesViewModel()
+	internal TestUpdatingViewModel()
 	{
 		_devices =
 		[
@@ -38,8 +38,6 @@ internal class TestDevicesViewModel<T> : DevicesViewModel<T> where T : ICollecti
 
 		_collectionUpdateTimer.Change(TimeSpan.FromSeconds(5), Timeout.InfiniteTimeSpan);
 	}
-
-	private protected override void UpdateFromSource() { throw new NotImplementedException(); }
 
 	private void ItemsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
 	{

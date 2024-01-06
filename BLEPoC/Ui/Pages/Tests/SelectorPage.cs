@@ -1,9 +1,11 @@
 ﻿using BLEPoC.Permissions;
+using BLEPoC.Ui.Models.Collection;
 using BLEPoC.Ui.Models.Collection.Items;
 using BLEPoC.Ui.Pages.Basic;
 using BLEPoC.Ui.Pages.Ble;
 using BLEPoC.Ui.Pages.Controls;
 using BLEPoC.Ui.Pages.Permissions;
+using BLEPoC.Ui.ViewModels.Ble;
 using BLEPoC.Ui.ViewModels.Tests;
 using BLEPoC.Utility;
 
@@ -34,11 +36,15 @@ internal class SelectorPage : PermissionsEnabledContentPage
 		Button flyoutPageButton = new() { Text = "Flyout Page Window" };
 		flyoutPageButton.Clicked += (_, _) => Application.Current?.OpenWindow(new WindowCustom(new FlyoutPageCustom(), "FlyWin #0")); // test FlyoutPage using ContentPages for the Flyout and Detail pages
 
-		Button collectionButton = new() { Text = "Collection" };
-		collectionButton.Clicked += (_, _) => Application.Current?.OpenWindow(new WindowCustom(new CollectionPage<CollectionItem>(new TestControlsCollectionViewModel<CollectionItem>())));
+		Button controlsCollectionButton = new() { Text = "Collection of Custom Controls" };
+		controlsCollectionButton.Clicked += (_, _) => Application.Current?.OpenWindow(new WindowCustom(new CollectionPage<CollectionItem>(new TestControlsCollectionViewModel<CollectionItem>()), "ctrls Coll Win"));
+
+		Button navigationPageCollectionButton = new() { Text = "Nav Page with Content Page collections" };
+		BondedBtDeviceCollectionViewModel<CollectionItem> bondedBtDeviceCollectionViewModel = new();
+		navigationPageCollectionButton.Clicked += (_, _) => Application.Current?.OpenWindow(new WindowCustom(new NavigationPageCollection<CollectionItem>(bondedBtDeviceCollectionViewModel), "NavPage Coll Win").EnableUpdateOnWindowActivation(bondedBtDeviceCollectionViewModel.RequestCollectionUpdate));
 
 		Button bleButton = new() { Text = "Ble" };
-		bleButton.Clicked += (_, _) => Application.Current?.OpenWindow(new WindowCustom(new BleStatusPage<CollectionItem>(), "Ble #0"));
+		bleButton.Clicked += (_, _) => Application.Current?.OpenWindow(new WindowCustom(new BleStatusPage(), "BleStatusWin #0"));
 		bleButton.IsEnabled = PermissionsProcessor.Instance.PermissionGranted;
 		PermissionsProcessor.Instance.PermissionsChanged += (_, permissionEventArgs) => bleButton.IsEnabled = permissionEventArgs.PermissionGranted;
 
@@ -51,7 +57,8 @@ internal class SelectorPage : PermissionsEnabledContentPage
 				navigationPageButton,
 				tabbedPageButton,
 				flyoutPageButton,
-				collectionButton,
+				controlsCollectionButton,
+				navigationPageCollectionButton,
 				bleButton
 			}
 		};

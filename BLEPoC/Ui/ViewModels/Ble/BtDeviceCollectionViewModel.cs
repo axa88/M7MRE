@@ -10,9 +10,9 @@ using Plugin.BLE.Abstractions.EventArgs;
 
 namespace BLEPoC.Ui.ViewModels.Ble;
 
-internal abstract class DevicesViewModel<T> : LifeCycleTriggeredItemCollection<T> where T : ICollectionItem, new()
+internal abstract class BtDeviceCollectionViewModel<T> : LifeCycleTriggeredItemCollection<T> where T : ICollectionItem, new()
 {
-	protected DevicesViewModel()
+	protected BtDeviceCollectionViewModel()
 	{
 		Adapter = CrossBluetoothLE.Current.Adapter;
 
@@ -28,24 +28,12 @@ internal abstract class DevicesViewModel<T> : LifeCycleTriggeredItemCollection<T
 
 	protected IReadOnlyList<IDevice> Devices { get; set; }
 
-	#region Overrides of LifeCycleTriggeredItemCollection
+	#region Overrides of LifeCycleTriggeredItemCollection<T>
 
-	protected internal override async void PopulateCollection(string caller, EventArgs eventArgs)
+	protected override async void UpdateCollection(List<(EventArgs EventArgs, string CallerName)> callers)
 	{
-		Trace.WriteLine(caller);
-
-		switch (eventArgs)
-		{
-			case DeviceBondStateChangedEventArgs deviceBondStateChangedEventArgs:
-				Trace.WriteLine($"{deviceBondStateChangedEventArgs.State} {deviceBondStateChangedEventArgs.Address} {deviceBondStateChangedEventArgs.Device.Id}");
-				break;
-			case DeviceErrorEventArgs deviceErrorEventArgs:
-				Trace.WriteLine($"{deviceErrorEventArgs.ErrorMessage} : {deviceErrorEventArgs.Device.Id}");
-				break;
-			case DeviceEventArgs deviceEventArgs:
-				Trace.WriteLine($"{deviceEventArgs.Device.Id}");
-				break;
-		}
+		foreach (var caller in callers)
+			Log(caller.CallerName, caller.EventArgs);
 
 		await MainThread.InvokeOnMainThreadAsync(() =>
 		{
@@ -68,14 +56,12 @@ internal abstract class DevicesViewModel<T> : LifeCycleTriggeredItemCollection<T
 		});
 
 		#pragma warning disable IDE0061 // Use block body for local function
-		#pragma warning disable CA2208 // Instantiate argument exceptions correctly
 		string DeviceType() => this switch
 		{
-			BondedDevicesViewModel<T> => nameof(IAdapter.BondedDevices),
-			ConnectedDevicesViewModel<T> => nameof(IAdapter.ConnectedDevices),
+			BondedBtDeviceCollectionViewModel<T> => nameof(IAdapter.BondedDevices),
+			ConnectedBtDeviceCollectionViewModel<T> => nameof(IAdapter.ConnectedDevices),
 			_ => throw new ArgumentOutOfRangeException()
 		};
-		#pragma warning restore CA2208 // Instantiate argument exceptions correctly
 		#pragma warning restore IDE0061 // Use block body for local function
 	}
 
@@ -85,4 +71,22 @@ internal abstract class DevicesViewModel<T> : LifeCycleTriggeredItemCollection<T
 	/// Apparently IReadOnlyCollection of BT devices needs to be reread for whatever reason
 	/// </summary>
 	private protected abstract void UpdateFromSource();
+
+	private static void Log(string caller, EventArgs eventArgs)
+	{
+		Trace.WriteLine(caller);
+
+		switch (eventArgs)
+		{
+			case DeviceBondStateChangedEventArgs deviceBondStateChangedEventArgs:
+				Trace.WriteLine($"{deviceBondStateChangedEventArgs.State} {deviceBondStateChangedEventArgs.Address} {deviceBondStateChangedEventArgs.Device.Id}");
+				break;
+			case DeviceErrorEventArgs deviceErrorEventArgs:
+				Trace.WriteLine($"{deviceErrorEventArgs.ErrorMessage} : {deviceErrorEventArgs.Device.Id}");
+				break;
+			case DeviceEventArgs deviceEventArgs:
+				Trace.WriteLine($"{deviceEventArgs.Device.Id}");
+				break;
+		}
+	}
 }
