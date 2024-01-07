@@ -12,9 +12,9 @@ using Button = Microsoft.Maui.Controls.Button;
 
 namespace BLEPoC.Ui.Pages.Controls;
 
-internal class TestCollectionPage<T> : ContentPage where T : ICollectionItem, new()
+internal class CollectionPageWButton<T> : ContentPage where T : ICollectionItem, new()
 {
-	internal TestCollectionPage(ItemCollection<T> itemCollection, Action buttonAction = null)
+	internal CollectionPageWButton(ItemCollection<T> itemCollection, Action buttonAction = null)
 	{
 		var stackLayout = new StackLayout();
 
