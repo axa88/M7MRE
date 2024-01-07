@@ -10,15 +10,13 @@ namespace BLEPoC.Ui.Pages.Controls;
 
 internal class NavigationPageCollection<T> : NavigationPage where T : ICollectionItem, new()
 {
-	private readonly CollectionPageWButton<T> _secondPageWButton;
+	private readonly CollectionPageWButton<T> _secondPageWButton = new(new BondedBtDeviceCollectionViewModel<T>());
 
 	internal NavigationPageCollection(ItemCollection<T> itemCollection, string title = null)
 	{
-		BondedBtDeviceCollectionViewModel<T> bondedBtDeviceCollectionViewModel = new();
-		_secondPageWButton = new(bondedBtDeviceCollectionViewModel);
-		PushAsync(new CollectionPageWButton<T>(itemCollection, PushPage));
-
 		_ = new LifeCycleTracing(this, title);
+
+		PushAsync(new CollectionPageWButton<T>(itemCollection, PushPage));
 	}
 
 
@@ -36,5 +34,5 @@ internal class NavigationPageCollection<T> : NavigationPage where T : ICollectio
 
 	#endregion
 
-	private void OnBackButtonPressing(string originEvent) => BackButtonPressing?.Invoke(this, new TraceEventArgs(originEvent));
+	private void OnBackButtonPressing(string originEvent) => BackButtonPressing?.Invoke(this, new(originEvent));
 }
